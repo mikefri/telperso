@@ -282,6 +282,8 @@
 
         .btn-chat { background: #00c48c20; color: var(--green); }
         .btn-chat:hover { background: #00c48c35; }
+        .btn-call-only { background: rgba(0,168,212,0.15); color: #00a8d4; }
+        .btn-call-only:hover { background: rgba(0,168,212,0.28); }
         .btn-del { background: rgba(255,77,77,0.1); color: var(--red); }
         .btn-del:hover { background: rgba(255,77,77,0.2); }
 
@@ -608,6 +610,7 @@
             <strong id="chat-with">Contact</strong>
             <small id="chat-status">Connecté</small>
         </div>
+        <button id="btn-start-call" class="btn-icon btn-call-only" style="margin-right:8px;" onclick="startCallFromChat()" title="Lancer un appel">📞</button>
         <button class="btn-end" onclick="stopAll()">✕ Quitter</button>
     </div>
 
@@ -771,7 +774,8 @@
                     <small>${escHtml(c.id)}</small>
                 </div>
                 <div class="contact-actions">
-                    <button class="btn-icon btn-chat" onclick="startComm('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Ouvrir conversation">💬</button>
+                    <button class="btn-icon btn-call-only" onclick="callOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Appel audio">📞</button>
+                    <button class="btn-icon btn-chat" onclick="startComm('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Chat + Appel">💬</button>
                     <button class="btn-icon btn-del" onclick="delContact(${i})" title="Supprimer">🗑</button>
                 </div>
             </div>`).join('');
@@ -803,6 +807,54 @@
     }
 
     // ── COMMUNICATION ──
+    function startCallFromChat() {
+        if (activeCall) return toast('📞 Appel déjà en cours');
+        if (!activeConn || !activeConn.open) return toast('❌ Pas de connexion active');
+        const id = document.getElementById('chat-status').textContent;
+        addSystemMsg('📞 Appel en cours…');
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            pendingStream = stream;
+            const call = peer.call(id, stream);
+            activeCall = call;
+            call.on('stream', rs => {
+                document.getElementById('remote-audio').srcObject = rs;
+                document.getElementById('call-bar').style.display = 'flex';
+                addSystemMsg('✅ Appel établi');
+            });
+            call.on('close', () => {
+                document.getElementById('call-bar').style.display = 'none';
+                addSystemMsg('📵 Appel terminé');
+                activeCall = null;
+            });
+        }).catch(() => toast('🎤 Micro inaccessible'));
+    }
+
+    function callOnly(id, nom) {
+        openCommScreen(nom, id);
+        addSystemMsg('📞 Appel en cours vers ' + nom + '…');
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            pendingStream = stream;
+            const call = peer.call(id, stream);
+            activeCall = call;
+            call.on('stream', rs => {
+                document.getElementById('remote-audio').srcObject = rs;
+                document.getElementById('call-bar').style.display = 'flex';
+                addSystemMsg('✅ Appel établi');
+            });
+            call.on('close', () => {
+                document.getElementById('call-bar').style.display = 'none';
+                addSystemMsg('📵 Appel terminé');
+            });
+            call.on('error', () => {
+                addSystemMsg('❌ Appel échoué');
+                toast('❌ Impossible d\'appeler ' + nom);
+            });
+        }).catch(() => {
+            addSystemMsg('⚠️ Micro inaccessible');
+            toast('🎤 Micro inaccessible');
+        });
+    }
+
     function startComm(id, nom) {
         openCommScreen(nom, id);
         const conn = peer.connect(id);
