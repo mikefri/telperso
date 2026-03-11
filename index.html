@@ -3,145 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebRTC Pro - Liste & Chat</title>
+    <title>Mon Phone Web Perso</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --primary: #075e54; --secondary: #25d366; --light: #f0f2f5; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        :root { --primary: #075e54; --secondary: #25d366; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 10; }
         
-        /* Header */
-        header { background: var(--primary); color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .contact-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .avatar { width: 45px; height: 45px; background: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; }
+        .info { flex: 1; }
+        
+        .actions button { border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-left: 5px; }
+        .btn-call { background: var(--secondary); color: white; }
+        .btn-del { background: #ff4d4d; color: white; }
 
-        /* Liste de Contacts */
-        .container { flex: 1; overflow-y: auto; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
-        .contact-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .contact-info { display: flex; align-items: center; }
-        .avatar { width: 45px; height: 45px; background: #ddd; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #666; }
-        
-        /* Boutons */
-        .btn-call { background: var(--secondary); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        
-        /* Fenêtre d'Appel & Chat */
-        #call-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: white; flex-direction: column; }
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; background: #e5ddd5; }
-        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
-        .msg-in { background: white; align-self: flex-start; }
-        .msg-out { background: #dcf8c6; align-self: flex-end; margin-left: auto; }
-        .chat-input { padding: 15px; display: flex; background: #f0f0f0; }
-        .chat-input input { flex: 1; border: none; padding: 10px; border-radius: 20px; margin-right: 10px; }
+        /* Formulaire d'ajout */
+        .add-form { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        #call-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 100; flex-direction: column; }
     </style>
 </head>
 <body>
 
 <header>
-    <h2>Mon Répertoire Web</h2>
+    <strong>Mon Répertoire Virtuel</strong><br>
     <small>Mon ID : <span id="my-id">...</span></small>
 </header>
 
-<div class="container" id="contact-list">
-    <div class="contact-card">
-        <div class="contact-info">
-            <div class="avatar">S</div>
-            <div><strong>Support</strong><br><small>En ligne</small></div>
-        </div>
-        <button class="btn-call" onclick="lancerAppel('id-support-fixe')">Appeler</button>
+<div class="container">
+    <div class="add-form">
+        <h3>Ajouter un contact</h3>
+        <input type="text" id="new-name" placeholder="Nom du contact">
+        <input type="text" id="new-id" placeholder="ID PeerJS du contact">
+        <button class="btn-add" onclick="ajouterContact()">+ Ajouter au répertoire</button>
     </div>
-    <div class="contact-card">
-        <div class="contact-info">
-            <div class="avatar">V</div>
-            <div><strong>Ventes</strong><br><small>Disponible</small></div>
-        </div>
-        <button class="btn-call" onclick="lancerAppel('id-ventes-fixe')">Appeler</button>
-    </div>
-</div>
 
-<div id="call-screen">
-    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
-        <span id="remote-name">Appel en cours...</span>
-        <button onclick="raccrocher()" style="background:#ff3b30; color:white; border:none; padding:5px 15px; border-radius:5px;">Quitter</button>
-    </div>
-    
-    <div class="chat-messages" id="chat-box">
+    <div id="contact-list">
         </div>
-
-    <div class="chat-input">
-        <input type="text" id="msg-input" placeholder="Écrire un message...">
-        <button onclick="envoyerMessage()" style="border:none; background:none; font-size:20px; cursor:pointer;">🚀</button>
-    </div>
 </div>
 
 <audio id="remote-audio" autoplay></audio>
 
 <script>
-    const peer = new Peer(); // Pour un vrai site, mettez un ID fixe ici
-    let activeConn = null;
-    let activeCall = null;
+    const peer = new Peer(); 
+    let contacts = JSON.parse(localStorage.getItem('mesContacts')) || [];
 
     peer.on('open', (id) => { document.getElementById('my-id').innerText = id; });
 
-    // Recevoir un message texte
-    peer.on('connection', (conn) => {
-        setupChat(conn);
-        document.getElementById('call-screen').style.display = 'flex';
-    });
+    // Afficher la liste au chargement
+    function afficherContacts() {
+        const liste = document.getElementById('contact-list');
+        liste.innerHTML = "";
+        contacts.forEach((c, index) => {
+            liste.innerHTML += `
+                <div class="contact-card">
+                    <div class="avatar">${c.nom[0]}</div>
+                    <div class="info"><strong>${c.nom}</strong><br><small>${c.id}</small></div>
+                    <div class="actions">
+                        <button class="btn-call" onclick="lancerAppel('${c.id}')">📞</button>
+                        <button class="btn-del" onclick="supprimerContact(${index})">🗑️</button>
+                    </div>
+                </div>`;
+        });
+    }
 
-    // Recevoir un appel audio
-    peer.on('call', (call) => {
-        if(confirm("Appel audio entrant... Répondre ?")) {
+    function ajouterContact() {
+        const nom = document.getElementById('new-name').value;
+        const id = document.getElementById('new-id').value;
+        if(nom && id) {
+            contacts.push({nom, id});
+            localStorage.setItem('mesContacts', JSON.stringify(contacts));
+            afficherContacts();
+            document.getElementById('new-name').value = "";
+            document.getElementById('new-id').value = "";
+        }
+    }
+
+    function supprimerContact(index) {
+        contacts.splice(index, 1);
+        localStorage.setItem('mesContacts', JSON.stringify(contacts));
+        afficherContacts();
+    }
+
+    function lancerAppel(idDest) {
+        navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+            const call = peer.call(idDest, stream);
+            call.on('stream', remStream => {
+                document.getElementById('remote-audio').srcObject = remStream;
+            });
+            alert("Appel lancé vers " + idDest);
+        });
+    }
+
+    peer.on('call', call => {
+        if(confirm("Appel entrant... Répondre ?")) {
             navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
                 call.answer(stream);
-                call.on('stream', remoteStream => {
-                    document.getElementById('remote-audio').srcObject = remoteStream;
+                call.on('stream', remStream => {
+                    document.getElementById('remote-audio').srcObject = remStream;
                 });
-                activeCall = call;
             });
         }
     });
 
-    function lancerAppel(idDestinataire) {
-        document.getElementById('call-screen').style.display = 'flex';
-        
-        // 1. Connexion pour le Chat
-        const conn = peer.connect(idDestinataire);
-        setupChat(conn);
-
-        // 2. Connexion pour l'Audio
-        navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
-            const call = peer.call(idDestinataire, stream);
-            call.on('stream', remoteStream => {
-                document.getElementById('remote-audio').srcObject = remoteStream;
-            });
-            activeCall = call;
-        });
-    }
-
-    function setupChat(conn) {
-        activeConn = conn;
-        conn.on('data', (data) => {
-            afficherMessage(data, 'msg-in');
-        });
-    }
-
-    function envoyerMessage() {
-        const input = document.getElementById('msg-input');
-        if(activeConn && input.value) {
-            activeConn.send(input.value);
-            afficherMessage(input.value, 'msg-out');
-            input.value = '';
-        }
-    }
-
-    function afficherMessage(texte, classe) {
-        const div = document.createElement('div');
-        div.className = `message ${classe}`;
-        div.innerText = texte;
-        document.getElementById('chat-box').appendChild(div);
-        document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
-    }
-
-    function raccrocher() {
-        location.reload(); // Moyen le plus simple de tout couper proprement
-    }
+    afficherContacts();
 </script>
 </body>
 </html>
