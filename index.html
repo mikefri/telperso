@@ -1,25 +1,29 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Site d'Appel Gratuit</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; }
-        .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
-        h1 { color: #128C7E; margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 30px; }
-        .btn-whatsapp { background-color: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; transition: transform 0.2s; }
-        .btn-whatsapp:hover { transform: scale(1.05); background-color: #128C7E; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>Contactez-nous</h1>
-        <p>Cliquez ci-dessous pour lancer un appel gratuit via votre connexion Wi-Fi ou Data.</p>
-        <a href="https://wa.me/33612345678" class="btn-whatsapp">
-            📞 Appeler sur WhatsApp
-        </a>
-    </div>
-</body>
-</html>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+<div id="status">Statut : En attente...</div>
+<button id="call-btn">Lancer l'appel audio</button>
+<audio id="remote-audio" autoplay></audio>
+
+<script>
+    const peer = new Peer('votre-id-unique-au-choix'); // Votre ID fixe sur votre PC
+
+    // 1. Recevoir l'appel (Sur votre PC)
+    peer.on('call', (call) => {
+        navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
+            call.answer(stream); // Vous répondez avec votre micro
+            call.on('stream', (remoteStream) => {
+                document.getElementById('remote-audio').srcObject = remoteStream;
+            });
+        });
+    });
+
+    // 2. Passer l'appel (Côté Visiteur)
+    document.getElementById('call-btn').addEventListener('click', () => {
+        navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
+            const call = peer.call('votre-id-unique-au-choix', stream);
+            call.on('stream', (remoteStream) => {
+                document.getElementById('remote-audio').srcObject = remoteStream;
+            });
+        });
+    });
+</script>
