@@ -3,114 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Phone Web Perso</title>
+    <title>Mon Téléphone Web Privé</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --primary: #075e54; --secondary: #25d366; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
-        header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 10; }
+        :root { --primary: #075e54; --secondary: #25d366; --bg: #e5ddd5; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
         
-        .container { padding: 15px; max-width: 500px; margin: auto; }
-        .contact-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .avatar { width: 45px; height: 45px; background: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; }
-        .info { flex: 1; }
+        /* Header & Connexion */
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .login-box { margin-top: 10px; }
+        input { padding: 10px; border-radius: 8px; border: none; outline: none; margin: 5px; }
+        button { cursor: pointer; border: none; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+        .btn-main { background: var(--secondary); color: white; padding: 10px 20px; }
+        .btn-main:hover { background: #128c7e; }
+
+        /* Contenu principal */
+        .main-container { flex: 1; display: flex; flex-direction: column; max-width: 500px; margin: auto; width: 100%; overflow: hidden; }
         
-        .actions button { border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-left: 5px; }
-        .btn-call { background: var(--secondary); color: white; }
-        .btn-del { background: #ff4d4d; color: white; }
+        /* Formulaire d'ajout de contacts */
+        .add-contact-area { background: white; padding: 15px; border-bottom: 1px solid #ddd; }
+        
+        /* Liste des contacts */
+        #contact-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .contact-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .avatar { width: 40px; height: 40px; background: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* Formulaire d'ajout */
-        .add-form { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        #call-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 100; flex-direction: column; }
+        /* Fenêtre de communication (Appel/Chat) */
+        #comm-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 100; flex-direction: column; }
+        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .msg { margin: 5px; padding: 10px; border-radius: 10px; max-width: 70%; word-wrap: break-word; }
+        .msg-in { background: white; align-self: flex-start; }
+        .msg-out { background: #dcf8c6; align-self: flex-end; }
+        .chat-input-area { background: #f0f0f0; padding: 15px; display: flex; }
     </style>
 </head>
 <body>
 
 <header>
-    <strong>Mon Répertoire Virtuel</strong><br>
-    <small>Mon ID : <span id="my-id">...</span></small>
+    <div id="setup-area">
+        <strong>Initialisez votre téléphone</strong><br>
+        <div class="login-box">
+            <input type="text" id="my-custom-id" placeholder="Votre pseudo (ex: marc2026)">
+            <button class="btn-main" onclick="connecterMonPeer()">Se connecter</button>
+        </div>
+    </div>
+    <div id="status-area" style="display:none;">
+        Connecté en tant que : <strong id="display-id"></strong>
+    </div>
 </header>
 
-<div class="container">
-    <div class="add-form">
-        <h3>Ajouter un contact</h3>
-        <input type="text" id="new-name" placeholder="Nom du contact">
-        <input type="text" id="new-id" placeholder="ID PeerJS du contact">
-        <button class="btn-add" onclick="ajouterContact()">+ Ajouter au répertoire</button>
+<div class="main-container">
+    <div class="add-contact-area">
+        <input type="text" id="new-contact-name" placeholder="Nom du contact" style="width:40%">
+        <input type="text" id="new-contact-id" placeholder="ID Peer" style="width:40%">
+        <button onclick="ajouterContact()" style="padding:10px;">➕</button>
     </div>
 
     <div id="contact-list">
         </div>
 </div>
 
+<div id="comm-screen">
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between;">
+        <span id="target-name">Discussion</span>
+        <button onclick="quitterComm()" style="background:#ff3b30; color:white; border-radius:5px; padding:5px 10px;">Fermer</button>
+    </div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chat-msg" placeholder="Écrire..." style="flex:1;">
+        <button onclick="envoyerMsg()" style="background:none; font-size:20px; margin-left:10px;">🚀</button>
+    </div>
+</div>
+
 <audio id="remote-audio" autoplay></audio>
+<audio id="ringtone" src="https://www.soundjay.com/phone/phone-calling-1.mp3" loop></audio>
 
 <script>
-    const peer = new Peer(); 
-    let contacts = JSON.parse(localStorage.getItem('mesContacts')) || [];
+    let peer = null;
+    let activeConn = null;
+    let activeCall = null;
+    let contacts = JSON.parse(localStorage.getItem('monRepertoire')) || [];
 
-    peer.on('open', (id) => { document.getElementById('my-id').innerText = id; });
+    // --- 1. CONNEXION ---
+    function connecterMonPeer() {
+        const id = document.getElementById('my-custom-id').value;
+        if (!id) return alert("Choisissez un pseudo !");
 
-    // Afficher la liste au chargement
-    function afficherContacts() {
+        peer = new Peer(id);
+
+        peer.on('open', (myId) => {
+            document.getElementById('setup-area').style.display = 'none';
+            document.getElementById('status-area').style.display = 'block';
+            document.getElementById('display-id').innerText = myId;
+            afficherRepertoire();
+        });
+
+        peer.on('error', err => alert("Erreur : " + err.type));
+
+        // Recevoir un appel audio
+        peer.on('call', call => {
+            document.getElementById('ringtone').play();
+            if(confirm("Appel audio entrant... Répondre ?")) {
+                document.getElementById('ringtone').pause();
+                navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+                    call.answer(stream);
+                    gererFluxAudio(call);
+                });
+            } else {
+                document.getElementById('ringtone').pause();
+            }
+        });
+
+        // Recevoir une connexion Chat
+        peer.on('connection', conn => {
+            document.getElementById('comm-screen').style.display = 'flex';
+            configurerChat(conn);
+        });
+    }
+
+    // --- 2. GESTION DU RÉPERTOIRE ---
+    function afficherRepertoire() {
         const liste = document.getElementById('contact-list');
         liste.innerHTML = "";
-        contacts.forEach((c, index) => {
+        contacts.forEach((c, idx) => {
             liste.innerHTML += `
                 <div class="contact-card">
-                    <div class="avatar">${c.nom[0]}</div>
-                    <div class="info"><strong>${c.nom}</strong><br><small>${c.id}</small></div>
-                    <div class="actions">
-                        <button class="btn-call" onclick="lancerAppel('${c.id}')">📞</button>
-                        <button class="btn-del" onclick="supprimerContact(${index})">🗑️</button>
+                    <div class="avatar">${c.nom[0].toUpperCase()}</div>
+                    <div style="flex:1; margin-left:15px;"><strong>${c.nom}</strong><br><small>${c.id}</small></div>
+                    <div>
+                        <button onclick="demarrerCommunication('${c.id}', '${c.nom}')" class="btn-main">📞 Chat/Appel</button>
+                        <button onclick="supprimer(${idx})" style="background:none;">🗑️</button>
                     </div>
                 </div>`;
         });
     }
 
     function ajouterContact() {
-        const nom = document.getElementById('new-name').value;
-        const id = document.getElementById('new-id').value;
+        const nom = document.getElementById('new-contact-name').value;
+        const id = document.getElementById('new-contact-id').value;
         if(nom && id) {
             contacts.push({nom, id});
-            localStorage.setItem('mesContacts', JSON.stringify(contacts));
-            afficherContacts();
-            document.getElementById('new-name').value = "";
-            document.getElementById('new-id').value = "";
+            localStorage.setItem('monRepertoire', JSON.stringify(contacts));
+            afficherRepertoire();
+            document.getElementById('new-contact-name').value = "";
+            document.getElementById('new-contact-id').value = "";
         }
     }
 
-    function supprimerContact(index) {
-        contacts.splice(index, 1);
-        localStorage.setItem('mesContacts', JSON.stringify(contacts));
-        afficherContacts();
+    function supprimer(idx) {
+        contacts.splice(idx, 1);
+        localStorage.setItem('monRepertoire', JSON.stringify(contacts));
+        afficherRepertoire();
     }
 
-    function lancerAppel(idDest) {
+    // --- 3. COMMUNICATIONS ---
+    function demarrerCommunication(idDest, nomDest) {
+        document.getElementById('target-name').innerText = nomDest;
+        document.getElementById('comm-screen').style.display = 'flex';
+
+        // Lancer le chat
+        const conn = peer.connect(idDest);
+        configurerChat(conn);
+
+        // Lancer l'audio
         navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
             const call = peer.call(idDest, stream);
-            call.on('stream', remStream => {
-                document.getElementById('remote-audio').srcObject = remStream;
-            });
-            alert("Appel lancé vers " + idDest);
+            gererFluxAudio(call);
         });
     }
 
-    peer.on('call', call => {
-        if(confirm("Appel entrant... Répondre ?")) {
-            navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
-                call.answer(stream);
-                call.on('stream', remStream => {
-                    document.getElementById('remote-audio').srcObject = remStream;
-                });
-            });
-        }
-    });
+    function gererFluxAudio(call) {
+        activeCall = call;
+        call.on('stream', stream => {
+            document.getElementById('remote-audio').srcObject = stream;
+        });
+    }
 
-    afficherContacts();
+    function configurerChat(conn) {
+        activeConn = conn;
+        conn.on('data', data => afficherMessage(data, 'msg-in'));
+    }
+
+    function envoyerMsg() {
+        const input = document.getElementById('chat-msg');
+        if(activeConn && input.value) {
+            activeConn.send(input.value);
+            afficherMessage(input.value, 'msg-out');
+            input.value = "";
+        }
+    }
+
+    function afficherMessage(txt, type) {
+        const box = document.getElementById('chat-box');
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        div.innerText = txt;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function quitterComm() {
+        if(confirm("Couper la communication ?")) location.reload();
+    }
 </script>
 </body>
 </html>
