@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPhone Pro</title>
+    <title>Halo — WebPhone</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --green: #00c48c;
-            --green-dark: #009e72;
-            --red: #ff4d4d;
-            --bg: #0f1117;
-            --surface: #1a1d27;
-            --surface2: #232636;
-            --border: rgba(255,255,255,0.07);
-            --text: #e8eaf0;
-            --text-muted: #7a7f96;
-            --msg-in: #1e2133;
-            --msg-out: #00c48c20;
-            --msg-out-border: #00c48c40;
-            --radius: 14px;
-            --font: 'DM Sans', sans-serif;
-            --mono: 'Space Mono', monospace;
+            --accent:   #5b6af0;
+            --accent2:  #7c3aed;
+            --green:    #10b981;
+            --green-lt: #d1fae5;
+            --red:      #ef4444;
+            --red-lt:   #fee2e2;
+            --bg:       #f4f5fb;
+            --white:    #ffffff;
+            --border:   #e8eaf4;
+            --text:     #1a1c2e;
+            --muted:    #8b8fa8;
+            --shadow:   0 2px 16px rgba(91,106,240,0.08);
+            --shadow-lg:0 8px 40px rgba(91,106,240,0.14);
+            --font:     'Outfit', sans-serif;
+            --mono:     'JetBrains Mono', monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: var(--font);
@@ -37,403 +37,491 @@
             overflow: hidden;
         }
 
-        /* ── ÉCRAN DE CONNEXION ── */
+        /* ════ LOGIN ════ */
         #login-screen {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(ellipse at 50% 0%, #00c48c18 0%, transparent 70%);
+            background:
+                radial-gradient(ellipse at 20% 20%, #e0e3ff 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, #ede9fe 0%, transparent 55%),
+                var(--bg);
+            padding: 20px;
         }
 
         .login-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 48px 40px;
-            width: 360px;
+            background: var(--white);
+            border-radius: 28px;
+            padding: 48px 40px 40px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--shadow-lg);
             text-align: center;
+            animation: fadeUp 0.5s ease both;
         }
 
-        .logo {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--green), #00a8d4);
-            border-radius: 18px;
-            display: flex;
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 24px;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 20px rgba(91,106,240,0.35);
+        }
+
+        .brand-name {
             font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .login-card h1 {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .login-card p {
-            color: var(--text-muted);
-            font-size: 13px;
+        .login-card .subtitle {
+            font-size: 14px;
+            color: var(--muted);
             margin-bottom: 32px;
+            line-height: 1.6;
         }
 
-        .field {
+        .input-wrap {
             position: relative;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
-        .field input {
+        .input-wrap .input-icon {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            pointer-events: none;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-weight: 500;
+        }
+
+        .input-wrap input {
             width: 100%;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             color: var(--text);
-            padding: 14px 16px;
-            border-radius: 10px;
+            padding: 13px 14px 13px 38px;
+            border-radius: 12px;
             font-family: var(--mono);
             font-size: 14px;
-            transition: border-color 0.2s;
             outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .field input:focus { border-color: var(--green); }
-        .field input::placeholder { color: var(--text-muted); font-family: var(--font); }
+        .input-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(91,106,240,0.12);
+        }
+        .input-wrap input::placeholder { color: var(--muted); font-family: var(--font); }
 
         .btn-primary {
             width: 100%;
-            background: var(--green);
-            color: #0f1117;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white;
             border: none;
             padding: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-family: var(--font);
             font-weight: 600;
             font-size: 15px;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(91,106,240,0.3);
+            margin-top: 4px;
+        }
+        .btn-primary:hover { opacity: 0.92; box-shadow: 0 6px 22px rgba(91,106,240,0.38); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        .status-line {
+            margin-top: 18px;
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .btn-primary:hover { background: var(--green-dark); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
+        .dot {
+            width: 7px; height: 7px;
             border-radius: 50%;
-            background: #555;
-            margin-right: 6px;
+            background: #ccc;
+            flex-shrink: 0;
             transition: background 0.3s;
         }
-        .status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
-        .status-dot.connecting { background: #f5a623; animation: pulse 1s infinite; }
+        .dot.online  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .dot.spinning { background: #f59e0b; animation: blink 1s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-        @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+        /* ════ APP ════ */
+        #app {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            max-width: 520px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-        /* ── APP PRINCIPALE ── */
-        #app { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-
-        /* Header */
         .app-header {
-            background: var(--surface);
+            background: var(--white);
             border-bottom: 1px solid var(--border);
             padding: 14px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
+            box-shadow: 0 1px 8px rgba(91,106,240,0.05);
         }
 
-        .app-header .logo-sm {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--green), #00a8d4);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
+        .hdr-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
             flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(91,106,240,0.25);
         }
 
-        .app-header h2 { font-size: 16px; font-weight: 600; }
-        .app-header .my-id {
+        .hdr-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+
+        .hdr-badge {
             font-family: var(--mono);
             font-size: 11px;
-            color: var(--green);
-            background: #00c48c15;
-            padding: 3px 8px;
-            border-radius: 6px;
+            color: var(--accent);
+            background: #eef0ff;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        /* Ajout contact */
-        .add-contact {
-            padding: 14px 16px;
-            background: var(--surface);
+        /* Add contact */
+        .add-section {
+            background: var(--white);
             border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 8px;
+            padding: 14px 16px;
         }
 
-        .add-contact input {
+        .add-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .add-row { display: flex; gap: 8px; }
+
+        .add-row input {
             flex: 1;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             color: var(--text);
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 10px 13px;
+            border-radius: 10px;
+            font-size: 13.5px;
             font-family: var(--font);
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            min-width: 0;
         }
-
-        .add-contact input:focus { border-color: var(--green); }
-        .add-contact input::placeholder { color: var(--text-muted); }
+        .add-row input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(91,106,240,0.1);
+        }
+        .add-row input::placeholder { color: var(--muted); }
 
         .btn-add {
-            background: var(--green);
-            color: #0f1117;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white;
             border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
+            width: 40px; height: 40px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
-            transition: background 0.2s;
+            box-shadow: 0 3px 10px rgba(91,106,240,0.25);
+            transition: opacity 0.2s, transform 0.15s;
         }
-        .btn-add:hover { background: var(--green-dark); }
+        .btn-add:hover { opacity: 0.88; }
+        .btn-add:active { transform: scale(0.95); }
 
-        /* Liste */
-        .contact-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 0;
+        .contacts-label {
+            padding: 14px 18px 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
         }
 
+        .contact-list { flex: 1; overflow-y: auto; padding: 4px 0 16px; }
         .contact-list::-webkit-scrollbar { width: 4px; }
-        .contact-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+        .contact-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
+            padding: 50px 24px;
+            color: var(--muted);
         }
-
-        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-        .empty-state p { font-size: 14px; line-height: 1.6; }
+        .empty-icon {
+            width: 72px; height: 72px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 16px;
+        }
+        .empty-state h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+        .empty-state p { font-size: 13px; line-height: 1.6; }
 
         .contact-card {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            gap: 14px;
+            padding: 11px 16px;
+            gap: 13px;
+            margin: 3px 10px;
+            border-radius: 14px;
             transition: background 0.15s;
-            cursor: default;
         }
-
-        .contact-card:hover { background: var(--surface); }
+        .contact-card:hover { background: var(--bg); }
 
         .avatar {
-            width: 46px;
-            height: 46px;
+            width: 46px; height: 46px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 17px;
             color: white;
             flex-shrink: 0;
         }
 
+        .av0 { background: linear-gradient(135deg,#f97316,#ef4444); }
+        .av1 { background: linear-gradient(135deg,#a855f7,#6366f1); }
+        .av2 { background: linear-gradient(135deg,#06b6d4,#3b82f6); }
+        .av3 { background: linear-gradient(135deg,#10b981,#059669); }
+        .av4 { background: linear-gradient(135deg,#f59e0b,#ef4444); }
+        .av5 { background: linear-gradient(135deg,#ec4899,#a855f7); }
+        .av6 { background: linear-gradient(135deg,#14b8a6,#6366f1); }
+        .av7 { background: linear-gradient(135deg,#84cc16,#10b981); }
+
         .contact-info { flex: 1; min-width: 0; }
-        .contact-info strong { display: block; font-size: 14px; font-weight: 500; }
-        .contact-info small {
+        .c-name { font-size: 14.5px; font-weight: 600; color: var(--text); }
+        .c-id {
             font-family: var(--mono);
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--muted);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            display: block;
+            margin-top: 2px;
         }
 
-        .contact-actions { display: flex; gap: 8px; }
+        .contact-actions { display: flex; gap: 6px; }
 
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+        .btn-ic {
+            width: 36px; height: 36px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 15px;
-            transition: all 0.15s;
+            transition: background 0.15s, transform 0.1s;
         }
+        .btn-ic:active { transform: scale(0.9); }
+        .ic-call { background: #e8f5e9; }
+        .ic-call:hover { background: #c8e6c9; }
+        .ic-chat { background: #eef0ff; }
+        .ic-chat:hover { background: #dde0ff; }
+        .ic-del  { background: var(--red-lt); }
+        .ic-del:hover { background: #fecaca; }
 
-        .btn-chat { background: #00c48c20; color: var(--green); }
-        .btn-chat:hover { background: #00c48c35; }
-        .btn-call-only { background: rgba(0,168,212,0.15); color: #00a8d4; }
-        .btn-call-only:hover { background: rgba(0,168,212,0.28); }
-        .btn-del { background: rgba(255,77,77,0.1); color: var(--red); }
-        .btn-del:hover { background: rgba(255,77,77,0.2); }
-
-        /* ── FENÊTRE CHAT ── */
+        /* ════ CHAT SCREEN ════ */
         #comm-screen {
             display: none;
             position: fixed;
             inset: 0;
-            background: var(--bg);
+            background: #f7f8fe;
             z-index: 200;
             flex-direction: column;
         }
 
         .chat-header {
-            background: var(--surface);
+            background: var(--white);
             border-bottom: 1px solid var(--border);
-            padding: 14px 16px;
+            padding: 13px 16px;
             display: flex;
             align-items: center;
             gap: 12px;
+            box-shadow: 0 1px 8px rgba(91,106,240,0.06);
         }
 
-        .chat-header .avatar-sm {
-            width: 38px;
-            height: 38px;
+        .back-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            transition: background 0.15s;
+            flex-shrink: 0;
+            color: var(--text);
+        }
+        .back-btn:hover { background: var(--bg); }
+
+        .chat-hdr-av {
+            width: 40px; height: 40px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 15px;
-            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 15px; color: white;
             flex-shrink: 0;
         }
 
-        .chat-header-info { flex: 1; }
-        .chat-header-info strong { display: block; font-size: 15px; font-weight: 600; }
-        .chat-header-info small { font-size: 12px; color: var(--text-muted); }
+        .chat-hdr-info { flex: 1; min-width: 0; }
+        .ch-name { font-size: 15px; font-weight: 600; }
+        .ch-sub  { font-size: 11px; color: var(--muted); font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .btn-end {
-            background: rgba(255,77,77,0.15);
-            color: var(--red);
+        .btn-call-hdr {
+            width: 38px; height: 38px;
+            border-radius: 10px;
             border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-family: var(--font);
-            font-weight: 500;
-            font-size: 13px;
+            background: var(--green-lt);
             cursor: pointer;
-            transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+            transition: background 0.15s;
         }
+        .btn-call-hdr:hover { background: #a7f3d0; }
 
-        .btn-end:hover { background: rgba(255,77,77,0.25); }
-
-        /* Call bar */
         #call-bar {
             display: none;
-            background: #00c48c12;
-            border-bottom: 1px solid var(--green);
-            padding: 8px 16px;
+            background: linear-gradient(90deg, #ecfdf5, #d1fae5);
+            border-bottom: 1px solid #a7f3d0;
+            padding: 9px 16px;
             align-items: center;
             gap: 10px;
             font-size: 13px;
+            font-weight: 500;
+            color: #065f46;
         }
 
-        #call-bar .call-dot {
-            width: 8px;
-            height: 8px;
+        .call-pulse {
+            width: 9px; height: 9px;
             background: var(--green);
             border-radius: 50%;
-            animation: pulse 1.2s infinite;
+            flex-shrink: 0;
+            animation: blink 1.3s infinite;
         }
 
-        #call-bar span { flex: 1; color: var(--green); }
-
         .btn-hangup {
+            margin-left: auto;
             background: var(--red);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 12px;
-            cursor: pointer;
             font-family: var(--font);
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
         }
+        .btn-hangup:hover { opacity: 0.85; }
 
-        /* Messages */
         .chat-box {
             flex: 1;
             overflow-y: auto;
             padding: 20px 16px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
-
         .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { background: var(--border); }
+        .chat-box::-webkit-scrollbar-thumb { background: #dde0ef; border-radius: 4px; }
 
         .msg {
-            max-width: 75%;
-            padding: 10px 14px;
-            border-radius: 16px;
+            max-width: 72%;
+            padding: 10px 14px 8px;
+            border-radius: 18px;
             font-size: 14px;
             line-height: 1.5;
             word-break: break-word;
-            animation: msgIn 0.2s ease;
+            animation: msgPop 0.18s ease both;
         }
-
-        @keyframes msgIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes msgPop {
+            from { opacity: 0; transform: scale(0.94) translateY(4px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .msg-in {
-            background: var(--msg-in);
+            background: var(--white);
             align-self: flex-start;
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 5px;
             color: var(--text);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
         }
 
         .msg-out {
-            background: var(--msg-out);
-            border: 1px solid var(--msg-out-border);
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            color: #a8f0d8;
+            border-bottom-right-radius: 5px;
+            color: white;
+            box-shadow: 0 2px 8px rgba(91,106,240,0.25);
         }
 
         .msg-time {
             font-size: 10px;
-            opacity: 0.5;
-            margin-top: 3px;
+            opacity: 0.55;
+            margin-top: 4px;
             display: block;
+            text-align: right;
         }
 
         .msg-system {
             align-self: center;
-            background: var(--surface2);
-            color: var(--text-muted);
-            font-size: 11px;
-            padding: 5px 12px;
+            background: rgba(139,143,168,0.1);
+            color: var(--muted);
+            font-size: 11.5px;
+            padding: 5px 14px;
             border-radius: 20px;
+            font-weight: 500;
+            margin: 4px 0;
         }
 
-        /* Saisie */
         .input-area {
-            background: var(--surface);
+            background: var(--white);
             border-top: 1px solid var(--border);
-            padding: 12px 16px;
+            padding: 12px 14px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -442,125 +530,120 @@
         .input-area input {
             flex: 1;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             color: var(--text);
             padding: 12px 16px;
             border-radius: 24px;
             font-size: 14px;
             font-family: var(--font);
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-
-        .input-area input:focus { border-color: var(--green); }
-        .input-area input::placeholder { color: var(--text-muted); }
+        .input-area input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(91,106,240,0.1);
+        }
+        .input-area input::placeholder { color: var(--muted); }
 
         .btn-send {
-            width: 44px;
-            height: 44px;
-            background: var(--green);
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 18px;
             flex-shrink: 0;
-            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 3px 12px rgba(91,106,240,0.3);
+            transition: opacity 0.2s, transform 0.15s;
+            color: white;
         }
-
-        .btn-send:hover { background: var(--green-dark); }
+        .btn-send:hover { opacity: 0.88; }
         .btn-send:active { transform: scale(0.92); }
 
-        /* Toast */
-        #toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 20px;
-            border-radius: 24px;
-            font-size: 13px;
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 999;
-            white-space: nowrap;
-        }
-
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Incoming call overlay */
+        /* ════ INCOMING CALL ════ */
         #incoming-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(26,28,46,0.55);
+            backdrop-filter: blur(6px);
             z-index: 500;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .incoming-card {
-            background: var(--surface);
-            border-radius: 24px;
-            padding: 40px;
+            background: var(--white);
+            border-radius: 28px;
+            padding: 40px 36px;
             text-align: center;
-            border: 1px solid var(--border);
-            width: 300px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 320px;
+            animation: fadeUp 0.3s ease both;
         }
 
-        .incoming-avatar {
-            width: 72px;
-            height: 72px;
+        .inc-avatar {
+            width: 80px; height: 80px;
             border-radius: 50%;
-            background: #00c48c30;
-            border: 2px solid var(--green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 16px;
-            animation: ring 1s infinite;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 18px;
+            animation: callRing 1.4s ease infinite;
+        }
+        @keyframes callRing {
+            0%,100% { box-shadow: 0 0 0 0 rgba(91,106,240,0.35); }
+            50%      { box-shadow: 0 0 0 18px rgba(91,106,240,0); }
         }
 
-        @keyframes ring {
-            0%,100% { box-shadow: 0 0 0 0 rgba(0,196,140,0.4); }
-            50% { box-shadow: 0 0 0 12px rgba(0,196,140,0); }
-        }
+        .incoming-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+        .inc-label { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
 
-        .incoming-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-        .incoming-card p { color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
-
-        .incoming-btns { display: flex; gap: 16px; justify-content: center; }
+        .inc-btns { display: flex; justify-content: center; gap: 24px; }
 
         .btn-accept, .btn-reject {
-            width: 56px;
-            height: 56px;
+            width: 62px; height: 62px;
             border-radius: 50%;
             border: none;
             cursor: pointer;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.15s;
+            font-size: 24px;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
+        .btn-accept {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 16px rgba(16,185,129,0.4);
+        }
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 4px 16px rgba(239,68,68,0.4);
+        }
+        .btn-accept:hover, .btn-reject:hover { transform: scale(1.08); }
 
-        .btn-accept { background: var(--green); }
-        .btn-reject { background: var(--red); }
-        .btn-accept:hover, .btn-reject:hover { transform: scale(1.1); }
-
-        /* Couleurs avatars */
-        .c0 { background: #e74c3c; } .c1 { background: #e67e22; } .c2 { background: #27ae60; }
-        .c3 { background: #2980b9; } .c4 { background: #8e44ad; } .c5 { background: #16a085; }
-        .c6 { background: #c0392b; } .c7 { background: #d35400; }
+        /* ════ TOAST ════ */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            background: var(--text);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 24px;
+            font-size: 13.5px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.28s cubic-bezier(.34,1.56,.64,1);
+            z-index: 999;
+            white-space: nowrap;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(26,28,46,0.2);
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
@@ -568,56 +651,63 @@
 <!-- LOGIN -->
 <div id="login-screen">
     <div class="login-card">
-        <div class="logo">📡</div>
-        <h1>WebPhone Pro</h1>
-        <p>Communication chiffrée peer-to-peer.<br>Choisissez un identifiant unique.</p>
-        <div class="field">
+        <div class="brand">
+            <div class="brand-icon">🌐</div>
+            <span class="brand-name">Halo</span>
+        </div>
+        <p class="subtitle">Communication peer-to-peer chiffrée.<br>Choisissez votre identifiant pour commencer.</p>
+        <div class="input-wrap">
+            <span class="input-icon">@</span>
             <input type="text" id="my-id-input" placeholder="Votre pseudo (ex: marc77)" maxlength="30" autocomplete="off">
         </div>
-        <button class="btn-primary" id="connect-btn" onclick="initPhone()">Se connecter</button>
-        <p style="margin-top:14px; font-size:12px; color:var(--text-muted);">
-            <span class="status-dot" id="status-dot"></span>
+        <button class="btn-primary" id="connect-btn" onclick="initPhone()">Se connecter →</button>
+        <div class="status-line">
+            <span class="dot" id="status-dot"></span>
             <span id="status-text">Non connecté</span>
-        </p>
+        </div>
     </div>
 </div>
 
 <!-- APP -->
 <div id="app">
     <div class="app-header">
-        <div class="logo-sm">📡</div>
-        <div style="flex:1;">
-            <h2>WebPhone Pro</h2>
-            <span class="my-id" id="display-id"></span>
+        <div class="hdr-icon">🌐</div>
+        <div style="flex:1">
+            <div class="hdr-title">Halo</div>
         </div>
-        <span class="status-dot online"></span>
+        <span class="hdr-badge" id="display-id"></span>
+        <span class="dot online" style="margin-left:8px; flex-shrink:0"></span>
     </div>
 
-    <div class="add-contact">
-        <input type="text" id="contact-name" placeholder="Nom du contact" maxlength="30">
-        <input type="text" id="contact-id" placeholder="ID Peer" maxlength="50" autocomplete="off">
-        <button class="btn-add" onclick="saveContact()" title="Ajouter">+</button>
+    <div class="add-section">
+        <div class="add-label">Nouveau contact</div>
+        <div class="add-row">
+            <input type="text" id="contact-name" placeholder="Nom" maxlength="30">
+            <input type="text" id="contact-id"   placeholder="ID Peer" maxlength="50" autocomplete="off">
+            <button class="btn-add" onclick="saveContact()" title="Ajouter">+</button>
+        </div>
     </div>
 
+    <div class="contacts-label">Mes contacts</div>
     <div class="contact-list" id="list"></div>
 </div>
 
-<!-- COMM SCREEN -->
+<!-- CHAT SCREEN -->
 <div id="comm-screen">
     <div class="chat-header">
-        <div class="avatar-sm c0" id="chat-avatar"></div>
-        <div class="chat-header-info">
-            <strong id="chat-with">Contact</strong>
-            <small id="chat-status">Connecté</small>
+        <button class="back-btn" onclick="stopAll()">←</button>
+        <div class="chat-hdr-av av0" id="chat-avatar"></div>
+        <div class="chat-hdr-info">
+            <div class="ch-name" id="chat-with">Contact</div>
+            <div class="ch-sub"  id="chat-status"></div>
         </div>
-        <button id="btn-start-call" class="btn-icon btn-call-only" style="margin-right:8px;" onclick="startCallFromChat()" title="Lancer un appel">📞</button>
-        <button class="btn-end" onclick="stopAll()">✕ Quitter</button>
+        <button class="btn-call-hdr" onclick="startCallFromChat()" title="Lancer un appel">📞</button>
     </div>
 
     <div id="call-bar">
-        <div class="call-dot"></div>
+        <div class="call-pulse"></div>
         <span>Appel audio en cours</span>
-        <button class="btn-hangup" onclick="hangupCall()">🔇 Raccrocher</button>
+        <button class="btn-hangup" onclick="hangupCall()">Raccrocher</button>
     </div>
 
     <div class="chat-box" id="chat-box"></div>
@@ -631,49 +721,46 @@
 <!-- INCOMING CALL -->
 <div id="incoming-overlay">
     <div class="incoming-card">
-        <div class="incoming-avatar" id="incoming-avatar">📞</div>
+        <div class="inc-avatar av0" id="incoming-avatar">?</div>
         <h3 id="incoming-name">Inconnu</h3>
-        <p>Appel entrant…</p>
-        <div class="incoming-btns">
+        <div class="inc-label">Appel entrant…</div>
+        <div class="inc-btns">
             <button class="btn-reject" onclick="rejectCall()" title="Refuser">📵</button>
             <button class="btn-accept" onclick="acceptCall()" title="Accepter">📞</button>
         </div>
     </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
-
 <audio id="remote-audio" autoplay></audio>
-<audio id="ring-sound" loop>
-    <source src="https://www.soundjay.com/phone/phone-calling-1.mp3">
-</audio>
+<audio id="ring-sound" loop><source src="https://www.soundjay.com/phone/phone-calling-1.mp3"></audio>
 
 <script>
     let peer = null, activeConn = null, activeCall = null, pendingCall = null, pendingStream = null;
-    let contacts = JSON.parse(localStorage.getItem('wp_contacts') || '[]');
-    let currentContactName = '';
+    let contacts = JSON.parse(localStorage.getItem('halo_contacts') || '[]');
 
-    const AVATAR_COLORS = ['c0','c1','c2','c3','c4','c5','c6','c7'];
-
-    function getColor(name) {
+    const AV = ['av0','av1','av2','av3','av4','av5','av6','av7'];
+    function getAv(name) {
         let h = 0;
-        for (let c of name) h = (h * 31 + c.charCodeAt(0)) % AVATAR_COLORS.length;
-        return AVATAR_COLORS[h];
+        for (let c of name) h = (h * 31 + c.charCodeAt(0)) % AV.length;
+        return AV[h];
     }
 
-    function toast(msg, duration = 3000) {
+    function toast(msg, ms = 3000) {
         const el = document.getElementById('toast');
         el.textContent = msg;
         el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), duration);
+        setTimeout(() => el.classList.remove('show'), ms);
     }
 
-    function formatTime(d = new Date()) {
-        return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    function fmtTime(d = new Date()) {
+        return d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
     }
 
-    // ── CONNEXION ──
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
     function initPhone() {
         const id = document.getElementById('my-id-input').value.trim();
         if (!id) return toast('⚠️ Entrez un pseudo');
@@ -681,47 +768,46 @@
 
         const btn = document.getElementById('connect-btn');
         const dot = document.getElementById('status-dot');
-        const statusTxt = document.getElementById('status-text');
-
         btn.disabled = true;
-        dot.className = 'status-dot connecting';
-        statusTxt.textContent = 'Connexion…';
+        dot.className = 'dot spinning';
+        document.getElementById('status-text').textContent = 'Connexion…';
 
         peer = new Peer(id);
 
-        peer.on('open', (myId) => {
+        peer.on('open', myId => {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app').style.display = 'flex';
-            document.getElementById('app').style.flexDirection = 'column';
+            const app = document.getElementById('app');
+            app.style.display = 'flex';
+            app.style.flexDirection = 'column';
+            app.style.flex = '1';
             document.getElementById('display-id').textContent = myId;
             renderContacts();
         });
 
-        peer.on('error', (err) => {
+        peer.on('error', err => {
             btn.disabled = false;
-            dot.className = 'status-dot';
-            statusTxt.textContent = 'Erreur';
-            if (err.type === 'unavailable-id') toast('❌ Ce pseudo est déjà pris');
-            else toast('❌ Erreur : ' + err.message);
+            dot.className = 'dot';
+            document.getElementById('status-text').textContent = 'Erreur';
+            toast(err.type === 'unavailable-id' ? '❌ Ce pseudo est déjà pris' : '❌ ' + err.message);
         });
 
-        // Appel entrant
-        peer.on('call', (call) => {
+        peer.on('call', call => {
             pendingCall = call;
             const name = contacts.find(c => c.id === call.peer)?.nom || call.peer;
             document.getElementById('incoming-name').textContent = name;
-            document.getElementById('incoming-avatar').textContent = name[0]?.toUpperCase() || '?';
+            const av = document.getElementById('incoming-avatar');
+            av.textContent = name[0]?.toUpperCase() || '?';
+            av.className = 'inc-avatar ' + getAv(name);
             document.getElementById('incoming-overlay').style.display = 'flex';
             try { document.getElementById('ring-sound').play(); } catch(e) {}
         });
 
-        // Chat entrant
-        peer.on('connection', (conn) => {
+        peer.on('connection', conn => {
             if (!activeConn) {
                 const name = contacts.find(c => c.id === conn.peer)?.nom || conn.peer;
                 openCommScreen(name, conn.peer);
                 setupChat(conn);
-                addSystemMsg('📩 ' + name + ' a ouvert une conversation');
+                addSystemMsg('📩 ' + name + ' vous a écrit');
             }
         });
     }
@@ -734,12 +820,10 @@
             pendingCall.answer(stream);
             activeCall = pendingCall;
             pendingCall = null;
-            activeCall.on('stream', rs => {
-                document.getElementById('remote-audio').srcObject = rs;
-            });
+            activeCall.on('stream', rs => document.getElementById('remote-audio').srcObject = rs);
             document.getElementById('call-bar').style.display = 'flex';
             const name = document.getElementById('incoming-name').textContent;
-            if (!document.getElementById('comm-screen').style.display || document.getElementById('comm-screen').style.display === 'none') {
+            if (document.getElementById('comm-screen').style.display !== 'flex') {
                 openCommScreen(name, activeCall.peer);
                 setupChat(peer.connect(activeCall.peer));
             }
@@ -755,61 +839,83 @@
         toast('Appel refusé');
     }
 
-    // ── CONTACTS ──
     function renderContacts() {
         const div = document.getElementById('list');
-        if (contacts.length === 0) {
-            div.innerHTML = `
-                <div class="empty-state">
-                    <div class="icon">👥</div>
-                    <p>Aucun contact encore.<br>Ajoutez-en un ci-dessus.</p>
-                </div>`;
+        if (!contacts.length) {
+            div.innerHTML = `<div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h3>Aucun contact</h3>
+                <p>Ajoutez un contact ci-dessus<br>pour commencer à communiquer.</p>
+            </div>`;
             return;
         }
         div.innerHTML = contacts.map((c, i) => `
             <div class="contact-card">
-                <div class="avatar ${getColor(c.nom)}">${c.nom[0].toUpperCase()}</div>
+                <div class="avatar ${getAv(c.nom)}">${c.nom[0].toUpperCase()}</div>
                 <div class="contact-info">
-                    <strong>${escHtml(c.nom)}</strong>
-                    <small>${escHtml(c.id)}</small>
+                    <div class="c-name">${escHtml(c.nom)}</div>
+                    <div class="c-id">${escHtml(c.id)}</div>
                 </div>
                 <div class="contact-actions">
-                    <button class="btn-icon btn-call-only" onclick="callOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Appel audio">📞</button>
-                    <button class="btn-icon btn-chat" onclick="chatOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Chat">💬</button>
-                    <button class="btn-icon btn-del" onclick="delContact(${i})" title="Supprimer">🗑</button>
+                    <button class="btn-ic ic-call" onclick="callOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Appel audio">📞</button>
+                    <button class="btn-ic ic-chat" onclick="chatOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Message">💬</button>
+                    <button class="btn-ic ic-del"  onclick="delContact(${i})" title="Supprimer">🗑</button>
                 </div>
             </div>`).join('');
     }
 
     function saveContact() {
         const nom = document.getElementById('contact-name').value.trim();
-        const id = document.getElementById('contact-id').value.trim();
+        const id  = document.getElementById('contact-id').value.trim();
         if (!nom || !id) return toast('⚠️ Nom et ID requis');
         if (contacts.find(c => c.id === id)) return toast('⚠️ Ce contact existe déjà');
         contacts.push({ nom, id });
-        localStorage.setItem('wp_contacts', JSON.stringify(contacts));
+        localStorage.setItem('halo_contacts', JSON.stringify(contacts));
         renderContacts();
         document.getElementById('contact-name').value = '';
         document.getElementById('contact-id').value = '';
-        toast('✅ Contact ajouté');
+        toast('✅ ' + nom + ' ajouté');
     }
 
     function delContact(i) {
         const name = contacts[i].nom;
         contacts.splice(i, 1);
-        localStorage.setItem('wp_contacts', JSON.stringify(contacts));
+        localStorage.setItem('halo_contacts', JSON.stringify(contacts));
         renderContacts();
         toast('🗑 ' + name + ' supprimé');
     }
 
-    function escHtml(s) {
-        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    function chatOnly(id, nom) {
+        openCommScreen(nom, id);
+        const conn = peer.connect(id);
+        conn.on('open', () => { addSystemMsg('✅ Connecté à ' + nom); setupChat(conn); });
+        conn.on('error', () => toast('❌ Impossible de joindre ' + nom));
     }
 
-    // ── COMMUNICATION ──
+    function callOnly(id, nom) {
+        openCommScreen(nom, id);
+        addSystemMsg('📞 Appel vers ' + nom + '…');
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            pendingStream = stream;
+            const call = peer.call(id, stream);
+            activeCall = call;
+            call.on('stream', rs => {
+                document.getElementById('remote-audio').srcObject = rs;
+                document.getElementById('call-bar').style.display = 'flex';
+                addSystemMsg('✅ Appel établi');
+            });
+            call.on('close', () => {
+                document.getElementById('call-bar').style.display = 'none';
+                addSystemMsg('📵 Appel terminé');
+                activeCall = null;
+            });
+            call.on('error', () => { addSystemMsg('❌ Appel échoué'); toast('❌ Impossible d\'appeler ' + nom); });
+        }).catch(() => { addSystemMsg('⚠️ Micro inaccessible'); toast('🎤 Micro inaccessible'); });
+    }
+
     function startCallFromChat() {
         if (activeCall) return toast('📞 Appel déjà en cours');
-        if (!activeConn || !activeConn.open) return toast('❌ Pas de connexion active');
+        if (!activeConn?.open) return toast('❌ Pas de connexion active');
         const id = document.getElementById('chat-status').textContent;
         addSystemMsg('📞 Appel en cours…');
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
@@ -829,96 +935,28 @@
         }).catch(() => toast('🎤 Micro inaccessible'));
     }
 
-    function chatOnly(id, nom) {
-        openCommScreen(nom, id);
-        const conn = peer.connect(id);
-        conn.on('open', () => {
-            addSystemMsg('✅ Connecté à ' + nom);
-            setupChat(conn);
-        });
-        conn.on('error', () => toast('❌ Impossible de joindre ' + nom));
-    }
-
-    function callOnly(id, nom) {
-        openCommScreen(nom, id);
-        addSystemMsg('📞 Appel en cours vers ' + nom + '…');
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            pendingStream = stream;
-            const call = peer.call(id, stream);
-            activeCall = call;
-            call.on('stream', rs => {
-                document.getElementById('remote-audio').srcObject = rs;
-                document.getElementById('call-bar').style.display = 'flex';
-                addSystemMsg('✅ Appel établi');
-            });
-            call.on('close', () => {
-                document.getElementById('call-bar').style.display = 'none';
-                addSystemMsg('📵 Appel terminé');
-            });
-            call.on('error', () => {
-                addSystemMsg('❌ Appel échoué');
-                toast('❌ Impossible d\'appeler ' + nom);
-            });
-        }).catch(() => {
-            addSystemMsg('⚠️ Micro inaccessible');
-            toast('🎤 Micro inaccessible');
-        });
-    }
-
-    function startComm(id, nom) {
-        openCommScreen(nom, id);
-        const conn = peer.connect(id);
-        conn.on('open', () => {
-            addSystemMsg('✅ Connecté à ' + nom);
-            setupChat(conn);
-        });
-        conn.on('error', () => toast('❌ Impossible de joindre ' + nom));
-
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            pendingStream = stream;
-            const call = peer.call(id, stream);
-            activeCall = call;
-            call.on('stream', rs => {
-                document.getElementById('remote-audio').srcObject = rs;
-                document.getElementById('call-bar').style.display = 'flex';
-                addSystemMsg('📞 Appel audio établi');
-            });
-            call.on('close', () => {
-                document.getElementById('call-bar').style.display = 'none';
-                addSystemMsg('📵 Appel terminé');
-            });
-        }).catch(() => {
-            addSystemMsg('⚠️ Audio indisponible (chat seul)');
-        });
-    }
-
     function openCommScreen(nom, id) {
-        currentContactName = nom;
         document.getElementById('chat-with').textContent = nom;
         document.getElementById('chat-status').textContent = id;
         const av = document.getElementById('chat-avatar');
         av.textContent = nom[0]?.toUpperCase() || '?';
-        av.className = 'avatar-sm ' + getColor(nom);
-        document.getElementById('comm-screen').style.display = 'flex';
+        av.className = 'chat-hdr-av ' + getAv(nom);
         document.getElementById('chat-box').innerHTML = '';
+        document.getElementById('call-bar').style.display = 'none';
+        document.getElementById('comm-screen').style.display = 'flex';
     }
 
     function setupChat(conn) {
         activeConn = conn;
-        conn.on('data', d => {
-            addMsg(d, 'msg-in');
-        });
-        conn.on('close', () => {
-            addSystemMsg('🔌 Connexion fermée');
-            activeConn = null;
-        });
+        conn.on('data', d => addMsg(d, 'msg-in'));
+        conn.on('close', () => { addSystemMsg('🔌 Connexion fermée'); activeConn = null; });
     }
 
     function sendMsg() {
         const inp = document.getElementById('message-input');
         const val = inp.value.trim();
         if (!val) return;
-        if (!activeConn || !activeConn.open) return toast('❌ Non connecté');
+        if (!activeConn?.open) return toast('❌ Non connecté');
         activeConn.send(val);
         addMsg(val, 'msg-out');
         inp.value = '';
@@ -928,7 +966,7 @@
         const box = document.getElementById('chat-box');
         const d = document.createElement('div');
         d.className = 'msg ' + cls;
-        d.innerHTML = escHtml(text) + `<span class="msg-time">${formatTime()}</span>`;
+        d.innerHTML = escHtml(text) + `<span class="msg-time">${fmtTime()}</span>`;
         box.appendChild(d);
         box.scrollTop = box.scrollHeight;
     }
@@ -936,7 +974,7 @@
     function addSystemMsg(text) {
         const box = document.getElementById('chat-box');
         const d = document.createElement('div');
-        d.className = 'msg msg-system';
+        d.className = 'msg-system';
         d.textContent = text;
         box.appendChild(d);
         box.scrollTop = box.scrollHeight;
@@ -947,19 +985,17 @@
         pendingStream?.getTracks().forEach(t => t.stop());
         document.getElementById('call-bar').style.display = 'none';
         addSystemMsg('📵 Vous avez raccroché');
+        activeCall = null;
     }
 
     function stopAll() {
-        if (confirm('Terminer la conversation ?')) {
-            activeCall?.close();
-            activeConn?.close();
-            pendingStream?.getTracks().forEach(t => t.stop());
-            document.getElementById('comm-screen').style.display = 'none';
-            activeConn = null; activeCall = null;
-        }
+        activeCall?.close();
+        activeConn?.close();
+        pendingStream?.getTracks().forEach(t => t.stop());
+        document.getElementById('comm-screen').style.display = 'none';
+        activeConn = null; activeCall = null;
     }
 
-    // Enter pour se connecter
     document.getElementById('my-id-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') initPhone();
     });
