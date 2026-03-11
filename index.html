@@ -1,29 +1,101 @@
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Phone - GitHub</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f7f6; }
+        .phone-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; }
+        .status { margin: 20px 0; padding: 10px; border-radius: 5px; background: #eee; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; color: white; transition: 0.3s; }
+        #call-btn { background: #28a745; }
+        #call-btn:disabled { background: #ccc; }
+        #hangup-btn { background: #dc3545; display: none; }
+        .peer-id { font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
 
-<div id="status">Statut : En attente...</div>
-<button id="call-btn">Lancer l'appel audio</button>
-<audio id="remote-audio" autoplay></audio>
+<div class="phone-card">
+    <h1>📞 Mon Site Téléphone</h1>
+    <div class="status" id="status">Initialisation...</div>
+    <p>Votre ID : <span id="my-id" class="peer-id">...</span></p>
+    
+    <input type="text" id="remote-id" placeholder="ID du contact à appeler">
+    <br><br>
+    
+    <button id="call-btn">Lancer l'appel</button>
+    <button id="hangup-btn">Raccrocher</button>
+
+    <audio id="remote-audio" autoplay></audio>
+</div>
 
 <script>
-    const peer = new Peer('votre-id-unique-au-choix'); // Votre ID fixe sur votre PC
+    // 1. Initialisation de la connexion Peer
+    // On laisse PeerJS générer un ID aléatoire ou on en fixe un
+    const peer = new Peer(); 
 
-    // 1. Recevoir l'appel (Sur votre PC)
+    const statusEl = document.getElementById('status');
+    const myIdEl = document.getElementById('my-id');
+    const callBtn = document.getElementById('call-btn');
+    const hangupBtn = document.getElementById('hangup-btn');
+    const remoteAudio = document.getElementById('remote-audio');
+    let currentCall = null;
+
+    // Quand la connexion au serveur PeerJS est établie
+    peer.on('open', (id) => {
+        myIdEl.innerText = id;
+        statusEl.innerText = "Prêt à recevoir des appels";
+    });
+
+    // 2. GÉRER LES APPELS ENTRANTS (Côté Récepteur)
     peer.on('call', (call) => {
-        navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
-            call.answer(stream); // Vous répondez avec votre micro
-            call.on('stream', (remoteStream) => {
-                document.getElementById('remote-audio').srcObject = remoteStream;
+        if (confirm("Appel entrant ! Voulez-vous répondre ?")) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                call.answer(stream); // On répond avec notre micro
+                statusEl.innerText = "En communication...";
+                handleCall(call);
             });
+        }
+    });
+
+    // 3. PASSER UN APPEL (Côté Appelant)
+    callBtn.addEventListener('click', () => {
+        const idToCall = document.getElementById('remote-id').value;
+        if (!idToCall) return alert("Veuillez saisir l'ID du contact");
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            const call = peer.call(idToCall, stream);
+            statusEl.innerText = "Appel en cours...";
+            handleCall(call);
         });
     });
 
-    // 2. Passer l'appel (Côté Visiteur)
-    document.getElementById('call-btn').addEventListener('click', () => {
-        navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
-            const call = peer.call('votre-id-unique-au-choix', stream);
-            call.on('stream', (remoteStream) => {
-                document.getElementById('remote-audio').srcObject = remoteStream;
-            });
+    function handleCall(call) {
+        currentCall = call;
+        callBtn.style.display = 'none';
+        hangupBtn.style.display = 'inline-block';
+
+        call.on('stream', (remoteStream) => {
+            remoteAudio.srcObject = remoteStream; // On joue le son de l'autre
         });
-    });
+
+        call.on('close', () => {
+            endCall();
+        });
+    }
+
+    function endCall() {
+        if (currentCall) currentCall.close();
+        statusEl.innerText = "Appel terminé";
+        callBtn.style.display = 'inline-block';
+        hangupBtn.style.display = 'none';
+    }
+
+    hangupBtn.addEventListener('click', endCall);
 </script>
+
+</body>
+</html>
