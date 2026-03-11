@@ -3,99 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebRTC Phone - GitHub</title>
+    <title>WebRTC Pro - Liste & Chat</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f7f6; }
-        .phone-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; }
-        .status { margin: 20px 0; padding: 10px; border-radius: 5px; background: #eee; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; color: white; transition: 0.3s; }
-        #call-btn { background: #28a745; }
-        #call-btn:disabled { background: #ccc; }
-        #hangup-btn { background: #dc3545; display: none; }
-        .peer-id { font-weight: bold; color: #007bff; }
+        :root { --primary: #075e54; --secondary: #25d366; --light: #f0f2f5; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Header */
+        header { background: var(--primary); color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* Liste de Contacts */
+        .container { flex: 1; overflow-y: auto; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .contact-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .contact-info { display: flex; align-items: center; }
+        .avatar { width: 45px; height: 45px; background: #ddd; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #666; }
+        
+        /* Boutons */
+        .btn-call { background: var(--secondary); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        
+        /* Fenêtre d'Appel & Chat */
+        #call-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: white; flex-direction: column; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; background: #e5ddd5; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
+        .msg-in { background: white; align-self: flex-start; }
+        .msg-out { background: #dcf8c6; align-self: flex-end; margin-left: auto; }
+        .chat-input { padding: 15px; display: flex; background: #f0f0f0; }
+        .chat-input input { flex: 1; border: none; padding: 10px; border-radius: 20px; margin-right: 10px; }
     </style>
 </head>
 <body>
 
-<div class="phone-card">
-    <h1>📞 Mon Site Téléphone</h1>
-    <div class="status" id="status">Initialisation...</div>
-    <p>Votre ID : <span id="my-id" class="peer-id">...</span></p>
-    
-    <input type="text" id="remote-id" placeholder="ID du contact à appeler">
-    <br><br>
-    
-    <button id="call-btn">Lancer l'appel</button>
-    <button id="hangup-btn">Raccrocher</button>
+<header>
+    <h2>Mon Répertoire Web</h2>
+    <small>Mon ID : <span id="my-id">...</span></small>
+</header>
 
-    <audio id="remote-audio" autoplay></audio>
+<div class="container" id="contact-list">
+    <div class="contact-card">
+        <div class="contact-info">
+            <div class="avatar">S</div>
+            <div><strong>Support</strong><br><small>En ligne</small></div>
+        </div>
+        <button class="btn-call" onclick="lancerAppel('id-support-fixe')">Appeler</button>
+    </div>
+    <div class="contact-card">
+        <div class="contact-info">
+            <div class="avatar">V</div>
+            <div><strong>Ventes</strong><br><small>Disponible</small></div>
+        </div>
+        <button class="btn-call" onclick="lancerAppel('id-ventes-fixe')">Appeler</button>
+    </div>
 </div>
 
+<div id="call-screen">
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+        <span id="remote-name">Appel en cours...</span>
+        <button onclick="raccrocher()" style="background:#ff3b30; color:white; border:none; padding:5px 15px; border-radius:5px;">Quitter</button>
+    </div>
+    
+    <div class="chat-messages" id="chat-box">
+        </div>
+
+    <div class="chat-input">
+        <input type="text" id="msg-input" placeholder="Écrire un message...">
+        <button onclick="envoyerMessage()" style="border:none; background:none; font-size:20px; cursor:pointer;">🚀</button>
+    </div>
+</div>
+
+<audio id="remote-audio" autoplay></audio>
+
 <script>
-    // 1. Initialisation de la connexion Peer
-    // On laisse PeerJS générer un ID aléatoire ou on en fixe un
-    const peer = new Peer(); 
+    const peer = new Peer(); // Pour un vrai site, mettez un ID fixe ici
+    let activeConn = null;
+    let activeCall = null;
 
-    const statusEl = document.getElementById('status');
-    const myIdEl = document.getElementById('my-id');
-    const callBtn = document.getElementById('call-btn');
-    const hangupBtn = document.getElementById('hangup-btn');
-    const remoteAudio = document.getElementById('remote-audio');
-    let currentCall = null;
+    peer.on('open', (id) => { document.getElementById('my-id').innerText = id; });
 
-    // Quand la connexion au serveur PeerJS est établie
-    peer.on('open', (id) => {
-        myIdEl.innerText = id;
-        statusEl.innerText = "Prêt à recevoir des appels";
+    // Recevoir un message texte
+    peer.on('connection', (conn) => {
+        setupChat(conn);
+        document.getElementById('call-screen').style.display = 'flex';
     });
 
-    // 2. GÉRER LES APPELS ENTRANTS (Côté Récepteur)
+    // Recevoir un appel audio
     peer.on('call', (call) => {
-        if (confirm("Appel entrant ! Voulez-vous répondre ?")) {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                call.answer(stream); // On répond avec notre micro
-                statusEl.innerText = "En communication...";
-                handleCall(call);
+        if(confirm("Appel audio entrant... Répondre ?")) {
+            navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+                call.answer(stream);
+                call.on('stream', remoteStream => {
+                    document.getElementById('remote-audio').srcObject = remoteStream;
+                });
+                activeCall = call;
             });
         }
     });
 
-    // 3. PASSER UN APPEL (Côté Appelant)
-    callBtn.addEventListener('click', () => {
-        const idToCall = document.getElementById('remote-id').value;
-        if (!idToCall) return alert("Veuillez saisir l'ID du contact");
+    function lancerAppel(idDestinataire) {
+        document.getElementById('call-screen').style.display = 'flex';
+        
+        // 1. Connexion pour le Chat
+        const conn = peer.connect(idDestinataire);
+        setupChat(conn);
 
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-            const call = peer.call(idToCall, stream);
-            statusEl.innerText = "Appel en cours...";
-            handleCall(call);
-        });
-    });
-
-    function handleCall(call) {
-        currentCall = call;
-        callBtn.style.display = 'none';
-        hangupBtn.style.display = 'inline-block';
-
-        call.on('stream', (remoteStream) => {
-            remoteAudio.srcObject = remoteStream; // On joue le son de l'autre
-        });
-
-        call.on('close', () => {
-            endCall();
+        // 2. Connexion pour l'Audio
+        navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+            const call = peer.call(idDestinataire, stream);
+            call.on('stream', remoteStream => {
+                document.getElementById('remote-audio').srcObject = remoteStream;
+            });
+            activeCall = call;
         });
     }
 
-    function endCall() {
-        if (currentCall) currentCall.close();
-        statusEl.innerText = "Appel terminé";
-        callBtn.style.display = 'inline-block';
-        hangupBtn.style.display = 'none';
+    function setupChat(conn) {
+        activeConn = conn;
+        conn.on('data', (data) => {
+            afficherMessage(data, 'msg-in');
+        });
     }
 
-    hangupBtn.addEventListener('click', endCall);
+    function envoyerMessage() {
+        const input = document.getElementById('msg-input');
+        if(activeConn && input.value) {
+            activeConn.send(input.value);
+            afficherMessage(input.value, 'msg-out');
+            input.value = '';
+        }
+    }
+
+    function afficherMessage(texte, classe) {
+        const div = document.createElement('div');
+        div.className = `message ${classe}`;
+        div.innerText = texte;
+        document.getElementById('chat-box').appendChild(div);
+        document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+    }
+
+    function raccrocher() {
+        location.reload(); // Moyen le plus simple de tout couper proprement
+    }
 </script>
-
 </body>
 </html>
