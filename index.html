@@ -3,187 +3,904 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Phone Web Pro</title>
+    <title>WebPhone Pro</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #075e54; --secondary: #25d366; --bg-chat: #e5ddd5; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Header */
-        header { background: var(--primary); color: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .login-box input { padding: 8px; border-radius: 5px; border: none; margin-right: 5px; }
-        
-        /* Conteneur Principal */
-        .main-container { flex: 1; max-width: 500px; margin: auto; width: 100%; display: flex; flex-direction: column; background: white; }
-        
-        /* Liste Contacts */
-        .contact-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .contact-card { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; transition: 0.2s; }
-        .contact-card:hover { background: #f9f9f9; }
-        .avatar { width: 45px; height: 45px; background: #128c7e; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; }
-        
-        /* Fenêtre de Communication */
-        #comm-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-chat); z-index: 100; flex-direction: column; }
-        .chat-header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-box { 
-            flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column;
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-blend-mode: overlay;
+        :root {
+            --green: #00c48c;
+            --green-dark: #009e72;
+            --red: #ff4d4d;
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #232636;
+            --border: rgba(255,255,255,0.07);
+            --text: #e8eaf0;
+            --text-muted: #7a7f96;
+            --msg-in: #1e2133;
+            --msg-out: #00c48c20;
+            --msg-out-border: #00c48c40;
+            --radius: 14px;
+            --font: 'DM Sans', sans-serif;
+            --mono: 'Space Mono', monospace;
         }
-        .msg { margin: 5px; padding: 10px 15px; border-radius: 15px; max-width: 80%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .msg-in { background: white; align-self: flex-start; border-top-left-radius: 0; }
-        .msg-out { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; }
-        
-        .input-area { background: #f0f0f0; padding: 10px; display: flex; align-items: center; }
-        .input-area input { flex: 1; padding: 10px; border-radius: 20px; border: none; outline: none; }
-        
-        .btn { border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        .btn-call { background: var(--secondary); color: white; padding: 8px 12px; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── ÉCRAN DE CONNEXION ── */
+        #login-screen {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 50% 0%, #00c48c18 0%, transparent 70%);
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 360px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--green), #00a8d4);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 28px;
+        }
+
+        .login-card h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 32px;
+        }
+
+        .field {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-family: var(--mono);
+            font-size: 14px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .field input:focus { border-color: var(--green); }
+        .field input::placeholder { color: var(--text-muted); font-family: var(--font); }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--green);
+            color: #0f1117;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-family: var(--font);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover { background: var(--green-dark); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #555;
+            margin-right: 6px;
+            transition: background 0.3s;
+        }
+        .status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .status-dot.connecting { background: #f5a623; animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+
+        /* ── APP PRINCIPALE ── */
+        #app { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+
+        /* Header */
+        .app-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-header .logo-sm {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--green), #00a8d4);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .app-header h2 { font-size: 16px; font-weight: 600; }
+        .app-header .my-id {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--green);
+            background: #00c48c15;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        /* Ajout contact */
+        .add-contact {
+            padding: 14px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-contact input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: var(--font);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .add-contact input:focus { border-color: var(--green); }
+        .add-contact input::placeholder { color: var(--text-muted); }
+
+        .btn-add {
+            background: var(--green);
+            color: #0f1117;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .btn-add:hover { background: var(--green-dark); }
+
+        /* Liste */
+        .contact-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .contact-list::-webkit-scrollbar { width: 4px; }
+        .contact-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-state p { font-size: 14px; line-height: 1.6; }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            gap: 14px;
+            transition: background 0.15s;
+            cursor: default;
+        }
+
+        .contact-card:hover { background: var(--surface); }
+
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .contact-info { flex: 1; min-width: 0; }
+        .contact-info strong { display: block; font-size: 14px; font-weight: 500; }
+        .contact-info small {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+        }
+
+        .contact-actions { display: flex; gap: 8px; }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: all 0.15s;
+        }
+
+        .btn-chat { background: #00c48c20; color: var(--green); }
+        .btn-chat:hover { background: #00c48c35; }
+        .btn-del { background: rgba(255,77,77,0.1); color: var(--red); }
+        .btn-del:hover { background: rgba(255,77,77,0.2); }
+
+        /* ── FENÊTRE CHAT ── */
+        #comm-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 200;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header .avatar-sm {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .chat-header-info { flex: 1; }
+        .chat-header-info strong { display: block; font-size: 15px; font-weight: 600; }
+        .chat-header-info small { font-size: 12px; color: var(--text-muted); }
+
+        .btn-end {
+            background: rgba(255,77,77,0.15);
+            color: var(--red);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-end:hover { background: rgba(255,77,77,0.25); }
+
+        /* Call bar */
+        #call-bar {
+            display: none;
+            background: #00c48c12;
+            border-bottom: 1px solid var(--green);
+            padding: 8px 16px;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        #call-bar .call-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 1.2s infinite;
+        }
+
+        #call-bar span { flex: 1; color: var(--green); }
+
+        .btn-hangup {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: var(--font);
+        }
+
+        /* Messages */
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chat-box::-webkit-scrollbar { width: 4px; }
+        .chat-box::-webkit-scrollbar-thumb { background: var(--border); }
+
+        .msg {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+            animation: msgIn 0.2s ease;
+        }
+
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-in {
+            background: var(--msg-in);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            color: var(--text);
+        }
+
+        .msg-out {
+            background: var(--msg-out);
+            border: 1px solid var(--msg-out-border);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            color: #a8f0d8;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            opacity: 0.5;
+            margin-top: 3px;
+            display: block;
+        }
+
+        .msg-system {
+            align-self: center;
+            background: var(--surface2);
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* Saisie */
+        .input-area {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-family: var(--font);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-area input:focus { border-color: var(--green); }
+        .input-area input::placeholder { color: var(--text-muted); }
+
+        .btn-send {
+            width: 44px;
+            height: 44px;
+            background: var(--green);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-send:hover { background: var(--green-dark); }
+        .btn-send:active { transform: scale(0.92); }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 999;
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Incoming call overlay */
+        #incoming-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .incoming-card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid var(--border);
+            width: 300px;
+        }
+
+        .incoming-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #00c48c30;
+            border: 2px solid var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px;
+            animation: ring 1s infinite;
+        }
+
+        @keyframes ring {
+            0%,100% { box-shadow: 0 0 0 0 rgba(0,196,140,0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(0,196,140,0); }
+        }
+
+        .incoming-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+        .incoming-card p { color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
+
+        .incoming-btns { display: flex; gap: 16px; justify-content: center; }
+
+        .btn-accept, .btn-reject {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s;
+        }
+
+        .btn-accept { background: var(--green); }
+        .btn-reject { background: var(--red); }
+        .btn-accept:hover, .btn-reject:hover { transform: scale(1.1); }
+
+        /* Couleurs avatars */
+        .c0 { background: #e74c3c; } .c1 { background: #e67e22; } .c2 { background: #27ae60; }
+        .c3 { background: #2980b9; } .c4 { background: #8e44ad; } .c5 { background: #16a085; }
+        .c6 { background: #c0392b; } .c7 { background: #d35400; }
     </style>
 </head>
 <body>
 
-<header>
-    <div id="auth-zone">
-        <strong>Connexion</strong><br>
-        <input type="text" id="my-id-input" placeholder="Pseudo (ex: marc77)">
-        <button onclick="initPhone()" class="btn" style="padding:8px;">Se connecter</button>
+<!-- LOGIN -->
+<div id="login-screen">
+    <div class="login-card">
+        <div class="logo">📡</div>
+        <h1>WebPhone Pro</h1>
+        <p>Communication chiffrée peer-to-peer.<br>Choisissez un identifiant unique.</p>
+        <div class="field">
+            <input type="text" id="my-id-input" placeholder="Votre pseudo (ex: marc77)" maxlength="30" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="connect-btn" onclick="initPhone()">Se connecter</button>
+        <p style="margin-top:14px; font-size:12px; color:var(--text-muted);">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Non connecté</span>
+        </p>
     </div>
-    <div id="info-zone" style="display:none;">
-        Connecté en tant que : <strong id="display-id"></strong>
-    </div>
-</header>
-
-<div class="main-container">
-    <div style="padding:15px; border-bottom:1px solid #ddd;">
-        <input type="text" id="contact-name" placeholder="Nom" style="width:35%">
-        <input type="text" id="contact-id" placeholder="ID Peer" style="width:35%">
-        <button onclick="saveContact()" class="btn-call">+</button>
-    </div>
-    <div id="list" class="contact-list"></div>
 </div>
 
+<!-- APP -->
+<div id="app">
+    <div class="app-header">
+        <div class="logo-sm">📡</div>
+        <div style="flex:1;">
+            <h2>WebPhone Pro</h2>
+            <span class="my-id" id="display-id"></span>
+        </div>
+        <span class="status-dot online"></span>
+    </div>
+
+    <div class="add-contact">
+        <input type="text" id="contact-name" placeholder="Nom du contact" maxlength="30">
+        <input type="text" id="contact-id" placeholder="ID Peer" maxlength="50" autocomplete="off">
+        <button class="btn-add" onclick="saveContact()" title="Ajouter">+</button>
+    </div>
+
+    <div class="contact-list" id="list"></div>
+</div>
+
+<!-- COMM SCREEN -->
 <div id="comm-screen">
     <div class="chat-header">
-        <span id="chat-with">Nom du contact</span>
-        <button onclick="stopAll()" class="btn" style="background:#ff3b30; color:white; padding:5px 10px;">Quitter</button>
+        <div class="avatar-sm c0" id="chat-avatar"></div>
+        <div class="chat-header-info">
+            <strong id="chat-with">Contact</strong>
+            <small id="chat-status">Connecté</small>
+        </div>
+        <button class="btn-end" onclick="stopAll()">✕ Quitter</button>
     </div>
+
+    <div id="call-bar">
+        <div class="call-dot"></div>
+        <span>Appel audio en cours</span>
+        <button class="btn-hangup" onclick="hangupCall()">🔇 Raccrocher</button>
+    </div>
+
     <div class="chat-box" id="chat-box"></div>
+
     <div class="input-area">
-        <input type="text" id="message-input" placeholder="Tapez un message...">
-        <button onclick="sendMsg()" style="background:none; font-size:24px; cursor:pointer;">🚀</button>
+        <input type="text" id="message-input" placeholder="Écrivez un message…" onkeydown="if(event.key==='Enter') sendMsg()">
+        <button class="btn-send" onclick="sendMsg()">➤</button>
     </div>
 </div>
 
+<!-- INCOMING CALL -->
+<div id="incoming-overlay">
+    <div class="incoming-card">
+        <div class="incoming-avatar" id="incoming-avatar">📞</div>
+        <h3 id="incoming-name">Inconnu</h3>
+        <p>Appel entrant…</p>
+        <div class="incoming-btns">
+            <button class="btn-reject" onclick="rejectCall()" title="Refuser">📵</button>
+            <button class="btn-accept" onclick="acceptCall()" title="Accepter">📞</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
 <audio id="remote-audio" autoplay></audio>
-<audio id="ring-sound" src="https://www.soundjay.com/phone/phone-calling-1.mp3" loop></audio>
-<audio id="msg-sound" src="https://www.soundjay.com/communication/beep-07.mp3"></audio>
+<audio id="ring-sound" loop>
+    <source src="https://www.soundjay.com/phone/phone-calling-1.mp3">
+</audio>
 
 <script>
-    let peer = null, activeConn = null, activeCall = null;
-    let contacts = JSON.parse(localStorage.getItem('myContacts')) || [];
+    let peer = null, activeConn = null, activeCall = null, pendingCall = null, pendingStream = null;
+    let contacts = JSON.parse(localStorage.getItem('wp_contacts') || '[]');
+    let currentContactName = '';
 
+    const AVATAR_COLORS = ['c0','c1','c2','c3','c4','c5','c6','c7'];
+
+    function getColor(name) {
+        let h = 0;
+        for (let c of name) h = (h * 31 + c.charCodeAt(0)) % AVATAR_COLORS.length;
+        return AVATAR_COLORS[h];
+    }
+
+    function toast(msg, duration = 3000) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), duration);
+    }
+
+    function formatTime(d = new Date()) {
+        return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ── CONNEXION ──
     function initPhone() {
-        const id = document.getElementById('my-id-input').value;
-        if (!id) return alert("Pseudo requis");
+        const id = document.getElementById('my-id-input').value.trim();
+        if (!id) return toast('⚠️ Entrez un pseudo');
+        if (!/^[a-zA-Z0-9_-]{2,30}$/.test(id)) return toast('⚠️ Pseudo invalide (lettres, chiffres, - _)');
+
+        const btn = document.getElementById('connect-btn');
+        const dot = document.getElementById('status-dot');
+        const statusTxt = document.getElementById('status-text');
+
+        btn.disabled = true;
+        dot.className = 'status-dot connecting';
+        statusTxt.textContent = 'Connexion…';
+
         peer = new Peer(id);
+
         peer.on('open', (myId) => {
-            document.getElementById('auth-zone').style.display = 'none';
-            document.getElementById('info-zone').style.display = 'block';
-            document.getElementById('display-id').innerText = myId;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            document.getElementById('app').style.flexDirection = 'column';
+            document.getElementById('display-id').textContent = myId;
             renderContacts();
         });
 
-        // Réception Appel
-        peer.on('call', call => {
-            document.getElementById('ring-sound').play();
-            if(confirm("Appel entrant... Répondre ?")) {
-                document.getElementById('ring-sound').pause();
-                navigator.mediaDevices.getUserMedia({audio: true}).then(s => {
-                    call.answer(s);
-                    activeCall = call;
-                    call.on('stream', rs => document.getElementById('remote-audio').srcObject = rs);
-                });
-            } else { document.getElementById('ring-sound').pause(); }
+        peer.on('error', (err) => {
+            btn.disabled = false;
+            dot.className = 'status-dot';
+            statusTxt.textContent = 'Erreur';
+            if (err.type === 'unavailable-id') toast('❌ Ce pseudo est déjà pris');
+            else toast('❌ Erreur : ' + err.message);
         });
 
-        // Réception Chat
-        peer.on('connection', conn => {
-            document.getElementById('comm-screen').style.display = 'flex';
-            setupChat(conn);
+        // Appel entrant
+        peer.on('call', (call) => {
+            pendingCall = call;
+            const name = contacts.find(c => c.id === call.peer)?.nom || call.peer;
+            document.getElementById('incoming-name').textContent = name;
+            document.getElementById('incoming-avatar').textContent = name[0]?.toUpperCase() || '?';
+            document.getElementById('incoming-overlay').style.display = 'flex';
+            try { document.getElementById('ring-sound').play(); } catch(e) {}
+        });
+
+        // Chat entrant
+        peer.on('connection', (conn) => {
+            if (!activeConn) {
+                const name = contacts.find(c => c.id === conn.peer)?.nom || conn.peer;
+                openCommScreen(name, conn.peer);
+                setupChat(conn);
+                addSystemMsg('📩 ' + name + ' a ouvert une conversation');
+            }
         });
     }
 
+    function acceptCall() {
+        document.getElementById('ring-sound').pause();
+        document.getElementById('incoming-overlay').style.display = 'none';
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            pendingStream = stream;
+            pendingCall.answer(stream);
+            activeCall = pendingCall;
+            pendingCall = null;
+            activeCall.on('stream', rs => {
+                document.getElementById('remote-audio').srcObject = rs;
+            });
+            document.getElementById('call-bar').style.display = 'flex';
+            const name = document.getElementById('incoming-name').textContent;
+            if (!document.getElementById('comm-screen').style.display || document.getElementById('comm-screen').style.display === 'none') {
+                openCommScreen(name, activeCall.peer);
+                setupChat(peer.connect(activeCall.peer));
+            }
+            addSystemMsg('📞 Appel accepté');
+        }).catch(() => toast('🎤 Micro inaccessible'));
+    }
+
+    function rejectCall() {
+        document.getElementById('ring-sound').pause();
+        document.getElementById('incoming-overlay').style.display = 'none';
+        pendingCall?.close();
+        pendingCall = null;
+        toast('Appel refusé');
+    }
+
+    // ── CONTACTS ──
     function renderContacts() {
         const div = document.getElementById('list');
-        div.innerHTML = "";
-        contacts.forEach((c, i) => {
-            div.innerHTML += `
-                <div class="contact-card">
-                    <div class="avatar">${c.nom[0]}</div>
-                    <div style="flex:1;"><strong>${c.nom}</strong><br><small>${c.id}</small></div>
-                    <button onclick="startComm('${c.id}', '${c.nom}')" class="btn-call">📞</button>
-                    <button onclick="delContact(${i})" style="margin-left:10px; background:none; border:none; cursor:pointer;">🗑️</button>
+        if (contacts.length === 0) {
+            div.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">👥</div>
+                    <p>Aucun contact encore.<br>Ajoutez-en un ci-dessus.</p>
                 </div>`;
-        });
+            return;
+        }
+        div.innerHTML = contacts.map((c, i) => `
+            <div class="contact-card">
+                <div class="avatar ${getColor(c.nom)}">${c.nom[0].toUpperCase()}</div>
+                <div class="contact-info">
+                    <strong>${escHtml(c.nom)}</strong>
+                    <small>${escHtml(c.id)}</small>
+                </div>
+                <div class="contact-actions">
+                    <button class="btn-icon btn-chat" onclick="startComm('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Ouvrir conversation">💬</button>
+                    <button class="btn-icon btn-del" onclick="delContact(${i})" title="Supprimer">🗑</button>
+                </div>
+            </div>`).join('');
     }
 
     function saveContact() {
-        const nom = document.getElementById('contact-name').value;
-        const id = document.getElementById('contact-id').value;
-        if(nom && id) {
-            contacts.push({nom, id});
-            localStorage.setItem('myContacts', JSON.stringify(contacts));
-            renderContacts();
-            document.getElementById('contact-name').value = ""; document.getElementById('contact-id').value = "";
-        }
+        const nom = document.getElementById('contact-name').value.trim();
+        const id = document.getElementById('contact-id').value.trim();
+        if (!nom || !id) return toast('⚠️ Nom et ID requis');
+        if (contacts.find(c => c.id === id)) return toast('⚠️ Ce contact existe déjà');
+        contacts.push({ nom, id });
+        localStorage.setItem('wp_contacts', JSON.stringify(contacts));
+        renderContacts();
+        document.getElementById('contact-name').value = '';
+        document.getElementById('contact-id').value = '';
+        toast('✅ Contact ajouté');
     }
 
     function delContact(i) {
+        const name = contacts[i].nom;
         contacts.splice(i, 1);
-        localStorage.setItem('myContacts', JSON.stringify(contacts));
+        localStorage.setItem('wp_contacts', JSON.stringify(contacts));
         renderContacts();
+        toast('🗑 ' + name + ' supprimé');
     }
 
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── COMMUNICATION ──
     function startComm(id, nom) {
-        document.getElementById('chat-with').innerText = nom;
-        document.getElementById('comm-screen').style.display = 'flex';
+        openCommScreen(nom, id);
         const conn = peer.connect(id);
-        setupChat(conn);
-        navigator.mediaDevices.getUserMedia({audio: true}).then(s => {
-            const call = peer.call(id, s);
-            activeCall = call;
-            call.on('stream', rs => document.getElementById('remote-audio').srcObject = rs);
+        conn.on('open', () => {
+            addSystemMsg('✅ Connecté à ' + nom);
+            setupChat(conn);
         });
+        conn.on('error', () => toast('❌ Impossible de joindre ' + nom));
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            pendingStream = stream;
+            const call = peer.call(id, stream);
+            activeCall = call;
+            call.on('stream', rs => {
+                document.getElementById('remote-audio').srcObject = rs;
+                document.getElementById('call-bar').style.display = 'flex';
+                addSystemMsg('📞 Appel audio établi');
+            });
+            call.on('close', () => {
+                document.getElementById('call-bar').style.display = 'none';
+                addSystemMsg('📵 Appel terminé');
+            });
+        }).catch(() => {
+            addSystemMsg('⚠️ Audio indisponible (chat seul)');
+        });
+    }
+
+    function openCommScreen(nom, id) {
+        currentContactName = nom;
+        document.getElementById('chat-with').textContent = nom;
+        document.getElementById('chat-status').textContent = id;
+        const av = document.getElementById('chat-avatar');
+        av.textContent = nom[0]?.toUpperCase() || '?';
+        av.className = 'avatar-sm ' + getColor(nom);
+        document.getElementById('comm-screen').style.display = 'flex';
+        document.getElementById('chat-box').innerHTML = '';
     }
 
     function setupChat(conn) {
         activeConn = conn;
         conn.on('data', d => {
-            document.getElementById('msg-sound').play();
             addMsg(d, 'msg-in');
+        });
+        conn.on('close', () => {
+            addSystemMsg('🔌 Connexion fermée');
+            activeConn = null;
         });
     }
 
     function sendMsg() {
         const inp = document.getElementById('message-input');
-        if(activeConn && inp.value) {
-            activeConn.send(inp.value);
-            addMsg(inp.value, 'msg-out');
-            inp.value = "";
-        }
+        const val = inp.value.trim();
+        if (!val) return;
+        if (!activeConn || !activeConn.open) return toast('❌ Non connecté');
+        activeConn.send(val);
+        addMsg(val, 'msg-out');
+        inp.value = '';
     }
 
-    function addMsg(t, cl) {
-        const b = document.getElementById('chat-box');
+    function addMsg(text, cls) {
+        const box = document.getElementById('chat-box');
         const d = document.createElement('div');
-        d.className = `msg ${cl}`; d.innerText = t;
-        b.appendChild(d); b.scrollTop = b.scrollHeight;
+        d.className = 'msg ' + cls;
+        d.innerHTML = escHtml(text) + `<span class="msg-time">${formatTime()}</span>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function addSystemMsg(text) {
+        const box = document.getElementById('chat-box');
+        const d = document.createElement('div');
+        d.className = 'msg msg-system';
+        d.textContent = text;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function hangupCall() {
+        activeCall?.close();
+        pendingStream?.getTracks().forEach(t => t.stop());
+        document.getElementById('call-bar').style.display = 'none';
+        addSystemMsg('📵 Vous avez raccroché');
     }
 
     function stopAll() {
-        if(confirm("Terminer ?")) location.reload();
+        if (confirm('Terminer la conversation ?')) {
+            activeCall?.close();
+            activeConn?.close();
+            pendingStream?.getTracks().forEach(t => t.stop());
+            document.getElementById('comm-screen').style.display = 'none';
+            activeConn = null; activeCall = null;
+        }
     }
+
+    // Enter pour se connecter
+    document.getElementById('my-id-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') initPhone();
+    });
 </script>
 </body>
 </html>
