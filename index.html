@@ -8,647 +8,259 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent:   #5b6af0;
-            --accent2:  #7c3aed;
-            --green:    #10b981;
-            --green-lt: #d1fae5;
-            --red:      #ef4444;
-            --red-lt:   #fee2e2;
-            --bg:       #f4f5fb;
-            --white:    #ffffff;
-            --border:   #e8eaf4;
-            --text:     #1a1c2e;
-            --muted:    #8b8fa8;
-            --shadow:   0 2px 16px rgba(91,106,240,0.08);
-            --shadow-lg:0 8px 40px rgba(91,106,240,0.14);
-            --font:     'Outfit', sans-serif;
-            --mono:     'JetBrains Mono', monospace;
+            --accent:    #5b6af0;
+            --accent2:   #7c3aed;
+            --green:     #10b981;
+            --green-lt:  #d1fae5;
+            --red:       #ef4444;
+            --red-lt:    #fee2e2;
+            --orange:    #f59e0b;
+            --bg:        #f4f5fb;
+            --white:     #ffffff;
+            --border:    #e8eaf4;
+            --text:      #1a1c2e;
+            --muted:     #8b8fa8;
+            --shadow-lg: 0 8px 40px rgba(91,106,240,0.14);
+            --font:      'Outfit', sans-serif;
+            --mono:      'JetBrains Mono', monospace;
         }
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
-        body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* ════ LOGIN ════ */
+        /* ══════════════════ LOGIN ══════════════════ */
         #login-screen {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background:
-                radial-gradient(ellipse at 20% 20%, #e0e3ff 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 80%, #ede9fe 0%, transparent 55%),
-                var(--bg);
-            padding: 20px;
+            flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px;
+            background: radial-gradient(ellipse at 20% 20%, #e0e3ff 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 80%, #ede9fe 0%, transparent 55%), var(--bg);
         }
-
         .login-card {
-            background: var(--white);
-            border-radius: 28px;
-            padding: 48px 40px 40px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: var(--shadow-lg);
-            text-align: center;
+            background: var(--white); border-radius: 28px; padding: 48px 40px 40px;
+            width: 100%; max-width: 380px; box-shadow: var(--shadow-lg); text-align: center;
             animation: fadeUp 0.5s ease both;
         }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .brand {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 28px;
-        }
-
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .brand { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 28px; }
         .brand-icon {
-            width: 52px; height: 52px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 6px 20px rgba(91,106,240,0.35);
+            width: 52px; height: 52px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 6px 20px rgba(91,106,240,0.35);
         }
-
         .brand-name {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+            font-size: 28px; font-weight: 700; letter-spacing: -0.5px;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .login-card .subtitle {
-            font-size: 14px;
-            color: var(--muted);
-            margin-bottom: 32px;
-            line-height: 1.6;
-        }
-
-        .input-wrap {
-            position: relative;
-            margin-bottom: 14px;
-        }
-
+        .login-card .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.6; }
+        .input-wrap { position: relative; margin-bottom: 14px; }
         .input-wrap .input-icon {
-            position: absolute;
-            left: 14px; top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            pointer-events: none;
-            color: var(--muted);
-            font-family: var(--mono);
-            font-weight: 500;
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            font-size: 15px; pointer-events: none; color: var(--muted); font-family: var(--mono);
         }
-
         .input-wrap input {
-            width: 100%;
-            background: var(--bg);
-            border: 1.5px solid var(--border);
-            color: var(--text);
-            padding: 13px 14px 13px 38px;
-            border-radius: 12px;
-            font-family: var(--mono);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; background: var(--bg); border: 1.5px solid var(--border); color: var(--text);
+            padding: 13px 14px 13px 38px; border-radius: 12px; font-family: var(--mono);
+            font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s;
         }
-
-        .input-wrap input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(91,106,240,0.12);
-        }
+        .input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(91,106,240,.12); }
         .input-wrap input::placeholder { color: var(--muted); font-family: var(--font); }
-
         .btn-primary {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-family: var(--font);
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 16px rgba(91,106,240,0.3);
-            margin-top: 4px;
+            width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;
+            border: none; padding: 14px; border-radius: 12px; font-family: var(--font); font-weight: 600;
+            font-size: 15px; cursor: pointer; transition: opacity .2s, transform .15s, box-shadow .2s;
+            box-shadow: 0 4px 16px rgba(91,106,240,.3); margin-top: 4px;
         }
-        .btn-primary:hover { opacity: 0.92; box-shadow: 0 6px 22px rgba(91,106,240,0.38); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
-
-        .status-line {
-            margin-top: 18px;
-            font-size: 12px;
-            color: var(--muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: #ccc;
-            flex-shrink: 0;
-            transition: background 0.3s;
-        }
+        .btn-primary:hover { opacity: .92; } .btn-primary:active { transform: scale(.98); }
+        .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+        .status-line { margin-top: 18px; font-size: 12px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; transition: background .3s; }
         .dot.online  { background: var(--green); box-shadow: 0 0 6px var(--green); }
-        .dot.spinning { background: #f59e0b; animation: blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .dot.connecting { background: var(--orange); animation: blink 1s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+        .webrtc-warn { margin-top: 14px; background: var(--red-lt); color: var(--red); border-radius: 10px; padding: 10px 14px; font-size: 13px; display: none; }
 
-        /* ════ APP ════ */
-        #app {
-            flex: 1;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            max-width: 520px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
+        /* ══════════════════ APP ══════════════════ */
+        #app { flex:1; display:none; flex-direction:column; overflow:hidden; max-width:520px; margin:0 auto; width:100%; }
         .app-header {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 1px 8px rgba(91,106,240,0.05);
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 13px 18px; display: flex; align-items: center; gap: 11px;
+            box-shadow: 0 1px 8px rgba(91,106,240,.05);
         }
-
         .hdr-icon {
-            width: 38px; height: 38px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            border-radius: 11px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 17px;
-            flex-shrink: 0;
-            box-shadow: 0 3px 10px rgba(91,106,240,0.25);
+            width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0; box-shadow: 0 3px 10px rgba(91,106,240,.25);
         }
-
-        .hdr-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-
-        .hdr-badge {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--accent);
-            background: #eef0ff;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-            max-width: 160px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        .hdr-title { font-size: 16px; font-weight: 700; letter-spacing: -.3px; }
+        .hdr-id-btn {
+            font-family: var(--mono); font-size: 11px; color: var(--accent); background: #eef0ff;
+            padding: 3px 10px; border-radius: 20px; font-weight: 500; border: none; cursor: pointer;
+            max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: background .15s; title: "Copier mon ID";
         }
+        .hdr-id-btn:hover { background: #dde0ff; }
 
         /* Add contact */
-        .add-section {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 14px 16px;
-        }
-
-        .add-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--muted);
-            margin-bottom: 10px;
-        }
-
-        .add-row { display: flex; gap: 8px; }
-
+        .add-section { background: var(--white); border-bottom: 1px solid var(--border); padding: 13px 16px; }
+        .add-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 9px; }
+        .add-row { display: flex; gap: 7px; }
         .add-row input {
-            flex: 1;
-            background: var(--bg);
-            border: 1.5px solid var(--border);
-            color: var(--text);
-            padding: 10px 13px;
-            border-radius: 10px;
-            font-size: 13.5px;
-            font-family: var(--font);
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            min-width: 0;
+            flex: 1; background: var(--bg); border: 1.5px solid var(--border); color: var(--text);
+            padding: 9px 12px; border-radius: 9px; font-size: 13px; font-family: var(--font);
+            outline: none; transition: border-color .2s, box-shadow .2s; min-width: 0;
         }
-        .add-row input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(91,106,240,0.1);
-        }
+        .add-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(91,106,240,.1); }
         .add-row input::placeholder { color: var(--muted); }
-
         .btn-add {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
-            border: none;
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: 600;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 3px 10px rgba(91,106,240,0.25);
-            transition: opacity 0.2s, transform 0.15s;
+            background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;
+            border: none; width: 38px; height: 38px; border-radius: 9px; cursor: pointer;
+            font-size: 20px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; box-shadow: 0 3px 10px rgba(91,106,240,.25); transition: opacity .2s, transform .15s;
         }
-        .btn-add:hover { opacity: 0.88; }
-        .btn-add:active { transform: scale(0.95); }
+        .btn-add:hover { opacity: .88; } .btn-add:active { transform: scale(.95); }
 
-        .contacts-label {
-            padding: 14px 18px 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--muted);
-        }
-
+        .contacts-label { padding: 13px 18px 5px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
         .contact-list { flex: 1; overflow-y: auto; padding: 4px 0 16px; }
         .contact-list::-webkit-scrollbar { width: 4px; }
         .contact-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-        .empty-state {
-            text-align: center;
-            padding: 50px 24px;
-            color: var(--muted);
-        }
-        .empty-icon {
-            width: 72px; height: 72px;
-            background: var(--bg);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px;
-            margin: 0 auto 16px;
-        }
+        .empty-state { text-align: center; padding: 50px 24px; color: var(--muted); }
+        .empty-icon { width: 72px; height: 72px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px; }
         .empty-state h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
         .empty-state p { font-size: 13px; line-height: 1.6; }
 
-        .contact-card {
-            display: flex;
-            align-items: center;
-            padding: 11px 16px;
-            gap: 13px;
-            margin: 3px 10px;
-            border-radius: 14px;
-            transition: background 0.15s;
-        }
+        .contact-card { display: flex; align-items: center; padding: 10px 14px; gap: 12px; margin: 3px 8px; border-radius: 14px; transition: background .15s; position: relative; }
         .contact-card:hover { background: var(--bg); }
-
-        .avatar {
-            width: 46px; height: 46px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700;
-            font-size: 17px;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .av0 { background: linear-gradient(135deg,#f97316,#ef4444); }
-        .av1 { background: linear-gradient(135deg,#a855f7,#6366f1); }
-        .av2 { background: linear-gradient(135deg,#06b6d4,#3b82f6); }
-        .av3 { background: linear-gradient(135deg,#10b981,#059669); }
-        .av4 { background: linear-gradient(135deg,#f59e0b,#ef4444); }
-        .av5 { background: linear-gradient(135deg,#ec4899,#a855f7); }
-        .av6 { background: linear-gradient(135deg,#14b8a6,#6366f1); }
-        .av7 { background: linear-gradient(135deg,#84cc16,#10b981); }
+        .avatar { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; color: white; flex-shrink: 0; }
+        .av0{background:linear-gradient(135deg,#f97316,#ef4444)} .av1{background:linear-gradient(135deg,#a855f7,#6366f1)}
+        .av2{background:linear-gradient(135deg,#06b6d4,#3b82f6)} .av3{background:linear-gradient(135deg,#10b981,#059669)}
+        .av4{background:linear-gradient(135deg,#f59e0b,#ef4444)} .av5{background:linear-gradient(135deg,#ec4899,#a855f7)}
+        .av6{background:linear-gradient(135deg,#14b8a6,#6366f1)} .av7{background:linear-gradient(135deg,#84cc16,#10b981)}
 
         .contact-info { flex: 1; min-width: 0; }
-        .c-name { font-size: 14.5px; font-weight: 600; color: var(--text); }
-        .c-id {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--muted);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin-top: 2px;
+        .c-name { font-size: 14px; font-weight: 600; }
+        .c-id { font-family: var(--mono); font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+        .contact-actions { display: flex; gap: 5px; }
+        .btn-ic { width: 34px; height: 34px; border-radius: 9px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: background .15s, transform .1s; }
+        .btn-ic:active { transform: scale(.9); }
+        .ic-call { background: #e8f5e9; } .ic-call:hover { background: #c8e6c9; }
+        .ic-chat { background: #eef0ff; } .ic-chat:hover { background: #dde0ff; }
+        .ic-del  { background: var(--red-lt); } .ic-del:hover { background: #fecaca; }
+
+        /* Unread badge */
+        .unread-badge {
+            position: absolute; top: 8px; right: 8px;
+            background: var(--accent); color: white; border-radius: 20px;
+            font-size: 10px; font-weight: 700; padding: 2px 7px; min-width: 18px; text-align: center;
+            animation: badgePop .2s ease both;
         }
+        @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
 
-        .contact-actions { display: flex; gap: 6px; }
-
-        .btn-ic {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 15px;
-            transition: background 0.15s, transform 0.1s;
-        }
-        .btn-ic:active { transform: scale(0.9); }
-        .ic-call { background: #e8f5e9; }
-        .ic-call:hover { background: #c8e6c9; }
-        .ic-chat { background: #eef0ff; }
-        .ic-chat:hover { background: #dde0ff; }
-        .ic-del  { background: var(--red-lt); }
-        .ic-del:hover { background: #fecaca; }
-
-        /* ════ CHAT SCREEN ════ */
-        #comm-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #f7f8fe;
-            z-index: 200;
-            flex-direction: column;
-        }
-
+        /* ══════════════════ CHAT SCREEN ══════════════════ */
+        #comm-screen { display:none; position:fixed; inset:0; background:#f7f8fe; z-index:200; flex-direction:column; }
         .chat-header {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 13px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 1px 8px rgba(91,106,240,0.06);
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 11px 14px; display: flex; align-items: center; gap: 11px;
+            box-shadow: 0 1px 8px rgba(91,106,240,.06);
         }
-
         .back-btn {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            border: 1.5px solid var(--border);
-            background: transparent;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            transition: background 0.15s;
-            flex-shrink: 0;
-            color: var(--text);
+            width: 34px; height: 34px; border-radius: 9px; border: 1.5px solid var(--border);
+            background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 15px; transition: background .15s; flex-shrink: 0; color: var(--text);
         }
         .back-btn:hover { background: var(--bg); }
-
-        .chat-hdr-av {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 15px; color: white;
-            flex-shrink: 0;
-        }
-
+        .chat-hdr-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
         .chat-hdr-info { flex: 1; min-width: 0; }
-        .ch-name { font-size: 15px; font-weight: 600; }
-        .ch-sub  { font-size: 11px; color: var(--muted); font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ch-name { font-size: 14px; font-weight: 600; }
+        .ch-sub  { font-size: 11px; color: var(--muted); }
+        .ch-typing { font-size: 11px; color: var(--accent); font-style: italic; animation: blink 1s infinite; }
 
-        .btn-call-hdr {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            border: none;
-            background: var(--green-lt);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 17px;
-            transition: background 0.15s;
-        }
+        .chat-hdr-actions { display: flex; gap: 6px; }
+        .btn-call-hdr { width: 36px; height: 36px; border-radius: 9px; border: none; background: #e8f5e9; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background .15s; }
         .btn-call-hdr:hover { background: #a7f3d0; }
+        .btn-mute-hdr { width: 36px; height: 36px; border-radius: 9px; border: none; background: #eef0ff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background .15s; }
+        .btn-mute-hdr:hover { background: #dde0ff; }
+        .btn-mute-hdr.muted { background: var(--red-lt); }
 
+        /* Call bar */
         #call-bar {
-            display: none;
-            background: linear-gradient(90deg, #ecfdf5, #d1fae5);
-            border-bottom: 1px solid #a7f3d0;
-            padding: 9px 16px;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #065f46;
+            display:none; background: linear-gradient(90deg,#ecfdf5,#d1fae5);
+            border-bottom: 1px solid #a7f3d0; padding: 8px 16px;
+            align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #065f46;
         }
+        .call-pulse { width:8px; height:8px; background:var(--green); border-radius:50%; flex-shrink:0; animation:blink 1.3s infinite; }
+        #call-timer { font-family: var(--mono); font-size: 13px; font-weight: 600; color: #065f46; }
+        .btn-hangup { margin-left: auto; background: var(--red); color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-family: var(--font); font-weight: 600; cursor: pointer; transition: opacity .2s; }
+        .btn-hangup:hover { opacity: .85; }
 
-        .call-pulse {
-            width: 9px; height: 9px;
-            background: var(--green);
-            border-radius: 50%;
-            flex-shrink: 0;
-            animation: blink 1.3s infinite;
-        }
+        /* Audio visualizer */
+        #audio-viz { display:flex; align-items:center; gap:2px; margin-left:4px; }
+        .viz-bar { width:3px; border-radius:3px; background:#10b981; transition: height .1s; }
 
-        .btn-hangup {
-            margin-left: auto;
-            background: var(--red);
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-family: var(--font);
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .btn-hangup:hover { opacity: 0.85; }
+        /* Messages */
+        .chat-box { flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:3px; }
+        .chat-box::-webkit-scrollbar { width:4px; }
+        .chat-box::-webkit-scrollbar-thumb { background:#dde0ef; border-radius:4px; }
+        .msg { max-width:72%; padding:9px 13px 7px; border-radius:18px; font-size:14px; line-height:1.5; word-break:break-word; animation:msgPop .18s ease both; }
+        @keyframes msgPop { from{opacity:0;transform:scale(.94) translateY(4px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        .msg-in  { background:var(--white); align-self:flex-start; border-bottom-left-radius:4px; color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,.07); }
+        .msg-out { background:linear-gradient(135deg,var(--accent),var(--accent2)); align-self:flex-end; border-bottom-right-radius:4px; color:white; box-shadow:0 2px 8px rgba(91,106,240,.25); }
+        .msg-time { font-size:10px; opacity:.5; margin-top:3px; display:block; text-align:right; }
+        .msg-system { align-self:center; background:rgba(139,143,168,.1); color:var(--muted); font-size:11px; padding:4px 13px; border-radius:20px; font-weight:500; margin:3px 0; }
 
-        .chat-box {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { background: #dde0ef; border-radius: 4px; }
+        /* Typing indicator */
+        .typing-bubble { align-self:flex-start; background:var(--white); border-radius:18px; border-bottom-left-radius:4px; padding:10px 14px; box-shadow:0 1px 4px rgba(0,0,0,.07); display:none; }
+        .typing-dots { display:flex; gap:4px; align-items:center; }
+        .typing-dots span { width:6px; height:6px; background:var(--muted); border-radius:50%; animation:typingBounce 1.2s infinite; }
+        .typing-dots span:nth-child(2) { animation-delay:.2s; }
+        .typing-dots span:nth-child(3) { animation-delay:.4s; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
 
-        .msg {
-            max-width: 72%;
-            padding: 10px 14px 8px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.5;
-            word-break: break-word;
-            animation: msgPop 0.18s ease both;
-        }
-        @keyframes msgPop {
-            from { opacity: 0; transform: scale(0.94) translateY(4px); }
-            to   { opacity: 1; transform: scale(1) translateY(0); }
-        }
+        /* Input */
+        .input-area { background:var(--white); border-top:1px solid var(--border); padding:10px 12px; display:flex; align-items:center; gap:8px; }
+        .input-area input { flex:1; background:var(--bg); border:1.5px solid var(--border); color:var(--text); padding:11px 15px; border-radius:22px; font-size:14px; font-family:var(--font); outline:none; transition:border-color .2s,box-shadow .2s; }
+        .input-area input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,106,240,.1); }
+        .input-area input::placeholder { color:var(--muted); }
+        .btn-send { width:44px; height:44px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; box-shadow:0 3px 12px rgba(91,106,240,.3); transition:opacity .2s,transform .15s; color:white; }
+        .btn-send:hover { opacity:.88; } .btn-send:active { transform:scale(.92); }
 
-        .msg-in {
-            background: var(--white);
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-            color: var(--text);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-        }
+        /* ══════════════════ INCOMING CALL ══════════════════ */
+        #incoming-overlay { display:none; position:fixed; inset:0; background:rgba(26,28,46,.55); backdrop-filter:blur(6px); z-index:500; align-items:center; justify-content:center; padding:20px; }
+        .incoming-card { background:var(--white); border-radius:28px; padding:38px 34px; text-align:center; box-shadow:var(--shadow-lg); width:100%; max-width:310px; animation:fadeUp .3s ease both; }
+        .inc-avatar { width:78px; height:78px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:white; margin:0 auto 16px; animation:callRing 1.4s ease infinite; }
+        @keyframes callRing { 0%,100%{box-shadow:0 0 0 0 rgba(91,106,240,.35)} 50%{box-shadow:0 0 0 18px rgba(91,106,240,0)} }
+        .incoming-card h3 { font-size: 21px; font-weight: 700; margin-bottom: 4px; }
+        .inc-label { font-size:13px; color:var(--muted); margin-bottom:28px; }
+        #call-timeout-bar { height:3px; background:var(--border); border-radius:3px; margin-bottom:20px; overflow:hidden; }
+        #call-timeout-fill { height:100%; width:100%; background:var(--accent); border-radius:3px; transition:width linear; }
+        .inc-btns { display:flex; justify-content:center; gap:24px; }
+        .btn-accept,.btn-reject { width:60px; height:60px; border-radius:50%; border:none; cursor:pointer; font-size:22px; display:flex; align-items:center; justify-content:center; transition:transform .15s,box-shadow .15s; }
+        .btn-accept { background:linear-gradient(135deg,#10b981,#059669); box-shadow:0 4px 16px rgba(16,185,129,.4); }
+        .btn-reject { background:linear-gradient(135deg,#ef4444,#dc2626); box-shadow:0 4px 16px rgba(239,68,68,.4); }
+        .btn-accept:hover,.btn-reject:hover { transform:scale(1.08); }
 
-        .msg-out {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
-            color: white;
-            box-shadow: 0 2px 8px rgba(91,106,240,0.25);
-        }
+        /* ══════════════════ CONFIRM DIALOG ══════════════════ */
+        #confirm-overlay { display:none; position:fixed; inset:0; background:rgba(26,28,46,.4); backdrop-filter:blur(4px); z-index:600; align-items:center; justify-content:center; padding:20px; }
+        .confirm-card { background:var(--white); border-radius:20px; padding:28px 24px; text-align:center; box-shadow:var(--shadow-lg); width:100%; max-width:280px; animation:fadeUp .25s ease both; }
+        .confirm-card h4 { font-size:16px; font-weight:600; margin-bottom:8px; }
+        .confirm-card p  { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.5; }
+        .confirm-btns { display:flex; gap:10px; }
+        .btn-confirm-cancel { flex:1; background:var(--bg); border:1.5px solid var(--border); color:var(--text); padding:10px; border-radius:10px; font-family:var(--font); font-weight:500; font-size:14px; cursor:pointer; transition:background .15s; }
+        .btn-confirm-cancel:hover { background:var(--border); }
+        .btn-confirm-ok { flex:1; background:var(--red); color:white; border:none; padding:10px; border-radius:10px; font-family:var(--font); font-weight:600; font-size:14px; cursor:pointer; transition:opacity .15s; }
+        .btn-confirm-ok:hover { opacity:.85; }
 
-        .msg-time {
-            font-size: 10px;
-            opacity: 0.55;
-            margin-top: 4px;
-            display: block;
-            text-align: right;
-        }
+        /* ══════════════════ TOAST ══════════════════ */
+        #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(14px); background:var(--text); color:white; padding:9px 20px; border-radius:22px; font-size:13px; font-weight:500; opacity:0; transition:all .28s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; pointer-events:none; box-shadow:0 4px 20px rgba(26,28,46,.2); }
+        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-        .msg-system {
-            align-self: center;
-            background: rgba(139,143,168,0.1);
-            color: var(--muted);
-            font-size: 11.5px;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-weight: 500;
-            margin: 4px 0;
-        }
-
-        .input-area {
-            background: var(--white);
-            border-top: 1px solid var(--border);
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .input-area input {
-            flex: 1;
-            background: var(--bg);
-            border: 1.5px solid var(--border);
-            color: var(--text);
-            padding: 12px 16px;
-            border-radius: 24px;
-            font-size: 14px;
-            font-family: var(--font);
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .input-area input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(91,106,240,0.1);
-        }
-        .input-area input::placeholder { color: var(--muted); }
-
-        .btn-send {
-            width: 46px; height: 46px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-            box-shadow: 0 3px 12px rgba(91,106,240,0.3);
-            transition: opacity 0.2s, transform 0.15s;
-            color: white;
-        }
-        .btn-send:hover { opacity: 0.88; }
-        .btn-send:active { transform: scale(0.92); }
-
-        /* ════ INCOMING CALL ════ */
-        #incoming-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(26,28,46,0.55);
-            backdrop-filter: blur(6px);
-            z-index: 500;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .incoming-card {
-            background: var(--white);
-            border-radius: 28px;
-            padding: 40px 36px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            width: 100%;
-            max-width: 320px;
-            animation: fadeUp 0.3s ease both;
-        }
-
-        .inc-avatar {
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px;
-            font-weight: 700;
-            color: white;
-            margin: 0 auto 18px;
-            animation: callRing 1.4s ease infinite;
-        }
-        @keyframes callRing {
-            0%,100% { box-shadow: 0 0 0 0 rgba(91,106,240,0.35); }
-            50%      { box-shadow: 0 0 0 18px rgba(91,106,240,0); }
-        }
-
-        .incoming-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 5px; }
-        .inc-label { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
-
-        .inc-btns { display: flex; justify-content: center; gap: 24px; }
-
-        .btn-accept, .btn-reject {
-            width: 62px; height: 62px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            font-size: 24px;
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .btn-accept {
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 4px 16px rgba(16,185,129,0.4);
-        }
-        .btn-reject {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            box-shadow: 0 4px 16px rgba(239,68,68,0.4);
-        }
-        .btn-accept:hover, .btn-reject:hover { transform: scale(1.08); }
-
-        /* ════ TOAST ════ */
-        #toast {
-            position: fixed;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%) translateY(16px);
-            background: var(--text);
-            color: white;
-            padding: 10px 22px;
-            border-radius: 24px;
-            font-size: 13.5px;
-            font-weight: 500;
-            opacity: 0;
-            transition: all 0.28s cubic-bezier(.34,1.56,.64,1);
-            z-index: 999;
-            white-space: nowrap;
-            pointer-events: none;
-            box-shadow: 0 4px 20px rgba(26,28,46,0.2);
-        }
-        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        /* ══════════════════ RECONNECT BANNER ══════════════════ */
+        #reconnect-bar { display:none; background:#fff8e1; border-bottom:1px solid #ffe082; padding:8px 16px; text-align:center; font-size:12px; color:#7c6000; font-weight:500; }
+        #reconnect-bar span { animation:blink 1s infinite; }
     </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ══ LOGIN ══ -->
 <div id="login-screen">
     <div class="login-card">
         <div class="brand">
@@ -661,6 +273,7 @@
             <input type="text" id="my-id-input" placeholder="Votre pseudo (ex: marc77)" maxlength="30" autocomplete="off">
         </div>
         <button class="btn-primary" id="connect-btn" onclick="initPhone()">Se connecter →</button>
+        <div class="webrtc-warn" id="webrtc-warn">⚠️ Votre navigateur ne supporte pas WebRTC. Utilisez Chrome, Firefox ou Edge.</div>
         <div class="status-line">
             <span class="dot" id="status-dot"></span>
             <span id="status-text">Non connecté</span>
@@ -668,17 +281,15 @@
     </div>
 </div>
 
-<!-- APP -->
+<!-- ══ APP ══ -->
 <div id="app">
+    <div id="reconnect-bar"><span>🔄</span> Reconnexion en cours…</div>
     <div class="app-header">
         <div class="hdr-icon">🌐</div>
-        <div style="flex:1">
-            <div class="hdr-title">Halo</div>
-        </div>
-        <span class="hdr-badge" id="display-id"></span>
-        <span class="dot online" style="margin-left:8px; flex-shrink:0"></span>
+        <div style="flex:1"><div class="hdr-title">Halo</div></div>
+        <button class="hdr-id-btn" id="display-id" onclick="copyMyId()" title="Copier mon ID">—</button>
+        <span class="dot online" style="margin-left:6px;flex-shrink:0"></span>
     </div>
-
     <div class="add-section">
         <div class="add-label">Nouveau contact</div>
         <div class="add-row">
@@ -687,43 +298,55 @@
             <button class="btn-add" onclick="saveContact()" title="Ajouter">+</button>
         </div>
     </div>
-
     <div class="contacts-label">Mes contacts</div>
     <div class="contact-list" id="list"></div>
 </div>
 
-<!-- CHAT SCREEN -->
+<!-- ══ CHAT SCREEN ══ -->
 <div id="comm-screen">
     <div class="chat-header">
         <button class="back-btn" onclick="stopAll()">←</button>
         <div class="chat-hdr-av av0" id="chat-avatar"></div>
         <div class="chat-hdr-info">
             <div class="ch-name" id="chat-with">Contact</div>
-            <div class="ch-sub"  id="chat-status"></div>
+            <div id="chat-sub-area">
+                <div class="ch-sub" id="chat-status"></div>
+            </div>
         </div>
-        <button class="btn-call-hdr" onclick="startCallFromChat()" title="Lancer un appel">📞</button>
+        <div class="chat-hdr-actions">
+            <button class="btn-mute-hdr" id="mute-btn" onclick="toggleMute()" title="Couper le micro" style="display:none">🎤</button>
+            <button class="btn-call-hdr" onclick="startCallFromChat()" title="Lancer un appel">📞</button>
+        </div>
     </div>
-
     <div id="call-bar">
         <div class="call-pulse"></div>
-        <span>Appel audio en cours</span>
+        <span>Appel en cours</span>
+        <div id="audio-viz">
+            <div class="viz-bar" style="height:6px" id="vb0"></div>
+            <div class="viz-bar" style="height:10px" id="vb1"></div>
+            <div class="viz-bar" style="height:8px" id="vb2"></div>
+            <div class="viz-bar" style="height:12px" id="vb3"></div>
+            <div class="viz-bar" style="height:6px" id="vb4"></div>
+        </div>
+        <span id="call-timer" style="margin-left:4px">00:00</span>
         <button class="btn-hangup" onclick="hangupCall()">Raccrocher</button>
     </div>
-
-    <div class="chat-box" id="chat-box"></div>
-
+    <div class="chat-box" id="chat-box">
+        <div class="typing-bubble" id="typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+    </div>
     <div class="input-area">
-        <input type="text" id="message-input" placeholder="Écrivez un message…" onkeydown="if(event.key==='Enter') sendMsg()">
+        <input type="text" id="message-input" placeholder="Écrivez un message…" onkeydown="handleInputKey(event)" oninput="handleTypingInput()">
         <button class="btn-send" onclick="sendMsg()">➤</button>
     </div>
 </div>
 
-<!-- INCOMING CALL -->
+<!-- ══ INCOMING CALL ══ -->
 <div id="incoming-overlay">
     <div class="incoming-card">
         <div class="inc-avatar av0" id="incoming-avatar">?</div>
         <h3 id="incoming-name">Inconnu</h3>
         <div class="inc-label">Appel entrant…</div>
+        <div id="call-timeout-bar"><div id="call-timeout-fill"></div></div>
         <div class="inc-btns">
             <button class="btn-reject" onclick="rejectCall()" title="Refuser">📵</button>
             <button class="btn-accept" onclick="acceptCall()" title="Accepter">📞</button>
@@ -731,274 +354,518 @@
     </div>
 </div>
 
+<!-- ══ CONFIRM DIALOG ══ -->
+<div id="confirm-overlay">
+    <div class="confirm-card">
+        <h4 id="confirm-title">Confirmer</h4>
+        <p  id="confirm-msg">Êtes-vous sûr ?</p>
+        <div class="confirm-btns">
+            <button class="btn-confirm-cancel" onclick="confirmResolve(false)">Annuler</button>
+            <button class="btn-confirm-ok"     onclick="confirmResolve(true)">Confirmer</button>
+        </div>
+    </div>
+</div>
+
 <div id="toast"></div>
 <audio id="remote-audio" autoplay></audio>
-<audio id="ring-sound" loop><source src="https://www.soundjay.com/phone/phone-calling-1.mp3"></audio>
+<audio id="ring-sound"   loop><source src="https://www.soundjay.com/phone/phone-calling-1.mp3"></audio>
+<audio id="msg-sound"        ><source src="https://www.soundjay.com/communication/beep-07.mp3"></audio>
+<audio id="connect-sound"    ><source src="https://www.soundjay.com/communication/beep-21.mp3"></audio>
 
 <script>
-    let peer = null, activeConn = null, activeCall = null, pendingCall = null, pendingStream = null;
-    let contacts = JSON.parse(localStorage.getItem('halo_contacts') || '[]');
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let peer = null, activeConn = null, activeCall = null, pendingCall = null, pendingStream = null;
+let contacts  = JSON.parse(localStorage.getItem('halo_contacts')  || '[]');
+let chatHistory = JSON.parse(localStorage.getItem('halo_history') || '{}'); // { peerId: [{type,text,time}] }
+let unread    = JSON.parse(localStorage.getItem('halo_unread')    || '{}'); // { peerId: count }
+let myId      = '';
+let activePeerId = '';
+let isMuted   = false;
+let callTimerInterval = null, callSeconds = 0;
+let callTimeoutTimer  = null;
+let typingTimeout     = null;
+let isTypingVisible   = false;
+let confirmResolveRef = null;
+let audioCtx = null, analyser = null, vizInterval = null;
+const CALL_TIMEOUT_SEC = 30;
 
-    const AV = ['av0','av1','av2','av3','av4','av5','av6','av7'];
-    function getAv(name) {
-        let h = 0;
-        for (let c of name) h = (h * 31 + c.charCodeAt(0)) % AV.length;
-        return AV[h];
-    }
+/* ═══════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════ */
+const AV = ['av0','av1','av2','av3','av4','av5','av6','av7'];
+function getAv(name) { let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))%AV.length; return AV[h]; }
 
-    function toast(msg, ms = 3000) {
-        const el = document.getElementById('toast');
-        el.textContent = msg;
-        el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), ms);
-    }
+function toast(msg, ms=3000) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), ms);
+}
 
-    function fmtTime(d = new Date()) {
-        return d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
-    }
+function fmtTime(d=new Date()) { return d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function fmtSeconds(s) { return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 
-    function escHtml(s) {
-        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    function initPhone() {
-        const id = document.getElementById('my-id-input').value.trim();
-        if (!id) return toast('⚠️ Entrez un pseudo');
-        if (!/^[a-zA-Z0-9_-]{2,30}$/.test(id)) return toast('⚠️ Pseudo invalide (lettres, chiffres, - _)');
+function saveHistory() { localStorage.setItem('halo_history', JSON.stringify(chatHistory)); }
+function saveUnread()  { localStorage.setItem('halo_unread',  JSON.stringify(unread)); }
 
-        const btn = document.getElementById('connect-btn');
-        const dot = document.getElementById('status-dot');
-        btn.disabled = true;
-        dot.className = 'dot spinning';
-        document.getElementById('status-text').textContent = 'Connexion…';
-
-        peer = new Peer(id);
-
-        peer.on('open', myId => {
-            document.getElementById('login-screen').style.display = 'none';
-            const app = document.getElementById('app');
-            app.style.display = 'flex';
-            app.style.flexDirection = 'column';
-            app.style.flex = '1';
-            document.getElementById('display-id').textContent = myId;
-            renderContacts();
-        });
-
-        peer.on('error', err => {
-            btn.disabled = false;
-            dot.className = 'dot';
-            document.getElementById('status-text').textContent = 'Erreur';
-            toast(err.type === 'unavailable-id' ? '❌ Ce pseudo est déjà pris' : '❌ ' + err.message);
-        });
-
-        peer.on('call', call => {
-            pendingCall = call;
-            const name = contacts.find(c => c.id === call.peer)?.nom || call.peer;
-            document.getElementById('incoming-name').textContent = name;
-            const av = document.getElementById('incoming-avatar');
-            av.textContent = name[0]?.toUpperCase() || '?';
-            av.className = 'inc-avatar ' + getAv(name);
-            document.getElementById('incoming-overlay').style.display = 'flex';
-            try { document.getElementById('ring-sound').play(); } catch(e) {}
-        });
-
-        peer.on('connection', conn => {
-            if (!activeConn) {
-                const name = contacts.find(c => c.id === conn.peer)?.nom || conn.peer;
-                openCommScreen(name, conn.peer);
-                setupChat(conn);
-                addSystemMsg('📩 ' + name + ' vous a écrit');
-            }
-        });
-    }
-
-    function acceptCall() {
-        document.getElementById('ring-sound').pause();
-        document.getElementById('incoming-overlay').style.display = 'none';
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            pendingStream = stream;
-            pendingCall.answer(stream);
-            activeCall = pendingCall;
-            pendingCall = null;
-            activeCall.on('stream', rs => document.getElementById('remote-audio').srcObject = rs);
-            document.getElementById('call-bar').style.display = 'flex';
-            const name = document.getElementById('incoming-name').textContent;
-            if (document.getElementById('comm-screen').style.display !== 'flex') {
-                openCommScreen(name, activeCall.peer);
-                setupChat(peer.connect(activeCall.peer));
-            }
-            addSystemMsg('📞 Appel accepté');
-        }).catch(() => toast('🎤 Micro inaccessible'));
-    }
-
-    function rejectCall() {
-        document.getElementById('ring-sound').pause();
-        document.getElementById('incoming-overlay').style.display = 'none';
-        pendingCall?.close();
-        pendingCall = null;
-        toast('Appel refusé');
-    }
-
-    function renderContacts() {
-        const div = document.getElementById('list');
-        if (!contacts.length) {
-            div.innerHTML = `<div class="empty-state">
-                <div class="empty-icon">👥</div>
-                <h3>Aucun contact</h3>
-                <p>Ajoutez un contact ci-dessus<br>pour commencer à communiquer.</p>
-            </div>`;
-            return;
-        }
-        div.innerHTML = contacts.map((c, i) => `
-            <div class="contact-card">
-                <div class="avatar ${getAv(c.nom)}">${c.nom[0].toUpperCase()}</div>
-                <div class="contact-info">
-                    <div class="c-name">${escHtml(c.nom)}</div>
-                    <div class="c-id">${escHtml(c.id)}</div>
-                </div>
-                <div class="contact-actions">
-                    <button class="btn-ic ic-call" onclick="callOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Appel audio">📞</button>
-                    <button class="btn-ic ic-chat" onclick="chatOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Message">💬</button>
-                    <button class="btn-ic ic-del"  onclick="delContact(${i})" title="Supprimer">🗑</button>
-                </div>
-            </div>`).join('');
-    }
-
-    function saveContact() {
-        const nom = document.getElementById('contact-name').value.trim();
-        const id  = document.getElementById('contact-id').value.trim();
-        if (!nom || !id) return toast('⚠️ Nom et ID requis');
-        if (contacts.find(c => c.id === id)) return toast('⚠️ Ce contact existe déjà');
-        contacts.push({ nom, id });
-        localStorage.setItem('halo_contacts', JSON.stringify(contacts));
-        renderContacts();
-        document.getElementById('contact-name').value = '';
-        document.getElementById('contact-id').value = '';
-        toast('✅ ' + nom + ' ajouté');
-    }
-
-    function delContact(i) {
-        const name = contacts[i].nom;
-        contacts.splice(i, 1);
-        localStorage.setItem('halo_contacts', JSON.stringify(contacts));
-        renderContacts();
-        toast('🗑 ' + name + ' supprimé');
-    }
-
-    function chatOnly(id, nom) {
-        openCommScreen(nom, id);
-        const conn = peer.connect(id);
-        conn.on('open', () => { addSystemMsg('✅ Connecté à ' + nom); setupChat(conn); });
-        conn.on('error', () => toast('❌ Impossible de joindre ' + nom));
-    }
-
-    function callOnly(id, nom) {
-        openCommScreen(nom, id);
-        addSystemMsg('📞 Appel vers ' + nom + '…');
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            pendingStream = stream;
-            const call = peer.call(id, stream);
-            activeCall = call;
-            call.on('stream', rs => {
-                document.getElementById('remote-audio').srcObject = rs;
-                document.getElementById('call-bar').style.display = 'flex';
-                addSystemMsg('✅ Appel établi');
-            });
-            call.on('close', () => {
-                document.getElementById('call-bar').style.display = 'none';
-                addSystemMsg('📵 Appel terminé');
-                activeCall = null;
-            });
-            call.on('error', () => { addSystemMsg('❌ Appel échoué'); toast('❌ Impossible d\'appeler ' + nom); });
-        }).catch(() => { addSystemMsg('⚠️ Micro inaccessible'); toast('🎤 Micro inaccessible'); });
-    }
-
-    function startCallFromChat() {
-        if (activeCall) return toast('📞 Appel déjà en cours');
-        if (!activeConn?.open) return toast('❌ Pas de connexion active');
-        const id = document.getElementById('chat-status').textContent;
-        addSystemMsg('📞 Appel en cours…');
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            pendingStream = stream;
-            const call = peer.call(id, stream);
-            activeCall = call;
-            call.on('stream', rs => {
-                document.getElementById('remote-audio').srcObject = rs;
-                document.getElementById('call-bar').style.display = 'flex';
-                addSystemMsg('✅ Appel établi');
-            });
-            call.on('close', () => {
-                document.getElementById('call-bar').style.display = 'none';
-                addSystemMsg('📵 Appel terminé');
-                activeCall = null;
-            });
-        }).catch(() => toast('🎤 Micro inaccessible'));
-    }
-
-    function openCommScreen(nom, id) {
-        document.getElementById('chat-with').textContent = nom;
-        document.getElementById('chat-status').textContent = id;
-        const av = document.getElementById('chat-avatar');
-        av.textContent = nom[0]?.toUpperCase() || '?';
-        av.className = 'chat-hdr-av ' + getAv(nom);
-        document.getElementById('chat-box').innerHTML = '';
-        document.getElementById('call-bar').style.display = 'none';
-        document.getElementById('comm-screen').style.display = 'flex';
-    }
-
-    function setupChat(conn) {
-        activeConn = conn;
-        conn.on('data', d => addMsg(d, 'msg-in'));
-        conn.on('close', () => { addSystemMsg('🔌 Connexion fermée'); activeConn = null; });
-    }
-
-    function sendMsg() {
-        const inp = document.getElementById('message-input');
-        const val = inp.value.trim();
-        if (!val) return;
-        if (!activeConn?.open) return toast('❌ Non connecté');
-        activeConn.send(val);
-        addMsg(val, 'msg-out');
-        inp.value = '';
-    }
-
-    function addMsg(text, cls) {
-        const box = document.getElementById('chat-box');
-        const d = document.createElement('div');
-        d.className = 'msg ' + cls;
-        d.innerHTML = escHtml(text) + `<span class="msg-time">${fmtTime()}</span>`;
-        box.appendChild(d);
-        box.scrollTop = box.scrollHeight;
-    }
-
-    function addSystemMsg(text) {
-        const box = document.getElementById('chat-box');
-        const d = document.createElement('div');
-        d.className = 'msg-system';
-        d.textContent = text;
-        box.appendChild(d);
-        box.scrollTop = box.scrollHeight;
-    }
-
-    function hangupCall() {
-        activeCall?.close();
-        pendingStream?.getTracks().forEach(t => t.stop());
-        document.getElementById('call-bar').style.display = 'none';
-        addSystemMsg('📵 Vous avez raccroché');
-        activeCall = null;
-    }
-
-    function stopAll() {
-        activeCall?.close();
-        activeConn?.close();
-        pendingStream?.getTracks().forEach(t => t.stop());
-        document.getElementById('comm-screen').style.display = 'none';
-        activeConn = null; activeCall = null;
-    }
-
-    document.getElementById('my-id-input').addEventListener('keydown', e => {
-        if (e.key === 'Enter') initPhone();
+// Custom confirm dialog
+function showConfirm(title, msg) {
+    return new Promise(resolve => {
+        confirmResolveRef = resolve;
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-msg').textContent   = msg;
+        document.getElementById('confirm-overlay').style.display = 'flex';
     });
+}
+function confirmResolve(val) {
+    document.getElementById('confirm-overlay').style.display = 'none';
+    if (confirmResolveRef) { confirmResolveRef(val); confirmResolveRef = null; }
+}
+
+// Browser notifications
+function requestNotifPermission() {
+    if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+}
+function sendNotif(title, body) {
+    if ('Notification' in window && Notification.permission === 'granted' && document.visibilityState === 'hidden') {
+        new Notification(title, { body, icon: '' });
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   WEBRTC CHECK
+═══════════════════════════════════════════════════ */
+if (!window.RTCPeerConnection) {
+    document.getElementById('webrtc-warn').style.display = 'block';
+    document.getElementById('connect-btn').disabled = true;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONNEXION
+═══════════════════════════════════════════════════ */
+function initPhone() {
+    const id = document.getElementById('my-id-input').value.trim();
+    if (!id) return toast('⚠️ Entrez un pseudo');
+    if (!/^[a-zA-Z0-9_-]{2,30}$/.test(id)) return toast('⚠️ Pseudo invalide (lettres, chiffres, - _)');
+    connectPeer(id, true);
+}
+
+function connectPeer(id, isFirst=false) {
+    const btn = document.getElementById('connect-btn');
+    const dot = document.getElementById('status-dot');
+    if (isFirst) { btn.disabled = true; }
+    dot.className = 'dot connecting';
+    document.getElementById('status-text').textContent = 'Connexion…';
+
+    if (peer) { try { peer.destroy(); } catch(e){} }
+
+    peer = new Peer(id);
+
+    peer.on('open', mid => {
+        myId = mid;
+        document.getElementById('login-screen').style.display = 'none';
+        const app = document.getElementById('app');
+        app.style.cssText = 'flex:1;display:flex;flex-direction:column;overflow:hidden;max-width:520px;margin:0 auto;width:100%';
+        document.getElementById('display-id').textContent = myId;
+        document.getElementById('reconnect-bar').style.display = 'none';
+        renderContacts();
+        requestNotifPermission();
+    });
+
+    peer.on('error', err => {
+        if (isFirst) { btn.disabled = false; dot.className = 'dot'; document.getElementById('status-text').textContent = 'Erreur'; }
+        if (err.type === 'unavailable-id') toast('❌ Ce pseudo est déjà pris');
+        else if (err.type === 'network' || err.type === 'server-error') scheduleReconnect(id);
+        else toast('❌ ' + err.message);
+    });
+
+    peer.on('disconnected', () => {
+        document.getElementById('reconnect-bar').style.display = 'block';
+        scheduleReconnect(id);
+    });
+
+    peer.on('call', call => {
+        // Auto-reject if already in a call
+        if (activeCall) { call.close(); return; }
+        pendingCall = call;
+        const name = contacts.find(c => c.id === call.peer)?.nom || call.peer;
+        document.getElementById('incoming-name').textContent = name;
+        const av = document.getElementById('incoming-avatar');
+        av.textContent = name[0]?.toUpperCase() || '?';
+        av.className = 'inc-avatar ' + getAv(name);
+        document.getElementById('incoming-overlay').style.display = 'flex';
+        // Timeout bar
+        const fill = document.getElementById('call-timeout-fill');
+        fill.style.transition = 'none'; fill.style.width = '100%';
+        setTimeout(() => { fill.style.transition = `width ${CALL_TIMEOUT_SEC}s linear`; fill.style.width = '0%'; }, 50);
+        callTimeoutTimer = setTimeout(() => rejectCall(), CALL_TIMEOUT_SEC * 1000);
+        try { document.getElementById('ring-sound').play(); } catch(e) {}
+        sendNotif('📞 Appel entrant', name + ' vous appelle');
+    });
+
+    peer.on('connection', conn => {
+        const name = contacts.find(c => c.id === conn.peer)?.nom || conn.peer;
+        if (!activeConn || activePeerId !== conn.peer) {
+            setupIncomingChat(conn, name);
+        }
+    });
+}
+
+let reconnectTimeout = null;
+function scheduleReconnect(id) {
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = setTimeout(() => connectPeer(id, false), 3000);
+}
+
+/* ═══════════════════════════════════════════════════
+   COPY MY ID
+═══════════════════════════════════════════════════ */
+function copyMyId() {
+    navigator.clipboard.writeText(myId).then(() => toast('✅ ID copié : ' + myId));
+}
+
+/* ═══════════════════════════════════════════════════
+   INCOMING CALL HANDLERS
+═══════════════════════════════════════════════════ */
+function acceptCall() {
+    clearTimeout(callTimeoutTimer);
+    document.getElementById('ring-sound').pause();
+    document.getElementById('incoming-overlay').style.display = 'none';
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        pendingStream = stream;
+        pendingCall.answer(stream);
+        activeCall = pendingCall; pendingCall = null;
+        activeCall.on('stream', rs => {
+            document.getElementById('remote-audio').srcObject = rs;
+            startCallUI();
+            setupAudioViz(rs);
+        });
+        activeCall.on('close', endCallUI);
+        const name = document.getElementById('incoming-name').textContent;
+        if (document.getElementById('comm-screen').style.display !== 'flex') {
+            openCommScreen(name, activeCall.peer);
+        }
+        addSystemMsg('📞 Appel accepté');
+        document.getElementById('mute-btn').style.display = 'flex';
+    }).catch(() => toast('🎤 Micro inaccessible'));
+}
+
+function rejectCall() {
+    clearTimeout(callTimeoutTimer);
+    document.getElementById('ring-sound').pause();
+    document.getElementById('incoming-overlay').style.display = 'none';
+    pendingCall?.close(); pendingCall = null;
+    toast('Appel refusé');
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTACTS
+═══════════════════════════════════════════════════ */
+function renderContacts() {
+    const div = document.getElementById('list');
+    if (!contacts.length) {
+        div.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><h3>Aucun contact</h3><p>Ajoutez un contact ci-dessus<br>pour commencer à communiquer.</p></div>`;
+        return;
+    }
+    div.innerHTML = contacts.map((c, i) => {
+        const u = unread[c.id] || 0;
+        return `<div class="contact-card">
+            <div class="avatar ${getAv(c.nom)}">${c.nom[0].toUpperCase()}</div>
+            <div class="contact-info">
+                <div class="c-name">${escHtml(c.nom)}</div>
+                <div class="c-id">${escHtml(c.id)}</div>
+            </div>
+            <div class="contact-actions">
+                <button class="btn-ic ic-call" onclick="callOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Appel audio">📞</button>
+                <button class="btn-ic ic-chat" onclick="chatOnly('${escHtml(c.id)}','${escHtml(c.nom)}')" title="Message">💬</button>
+                <button class="btn-ic ic-del"  onclick="delContactConfirm(${i})" title="Supprimer">🗑</button>
+            </div>
+            ${u > 0 ? `<div class="unread-badge">${u}</div>` : ''}
+        </div>`;
+    }).join('');
+}
+
+function saveContact() {
+    const nom = document.getElementById('contact-name').value.trim();
+    const id  = document.getElementById('contact-id').value.trim();
+    if (!nom || !id) return toast('⚠️ Nom et ID requis');
+    if (contacts.find(c => c.id === id)) return toast('⚠️ Ce contact existe déjà');
+    contacts.push({ nom, id });
+    localStorage.setItem('halo_contacts', JSON.stringify(contacts));
+    renderContacts();
+    document.getElementById('contact-name').value = '';
+    document.getElementById('contact-id').value = '';
+    toast('✅ ' + nom + ' ajouté');
+}
+
+async function delContactConfirm(i) {
+    const name = contacts[i].nom;
+    const ok = await showConfirm('Supprimer le contact', `Voulez-vous vraiment supprimer "${name}" ?`);
+    if (!ok) return;
+    contacts.splice(i, 1);
+    localStorage.setItem('halo_contacts', JSON.stringify(contacts));
+    renderContacts();
+    toast('🗑 ' + name + ' supprimé');
+}
+
+/* ═══════════════════════════════════════════════════
+   COMMUNICATION
+═══════════════════════════════════════════════════ */
+function chatOnly(id, nom) {
+    openCommScreen(nom, id);
+    const conn = peer.connect(id);
+    conn.on('open', () => { addSystemMsg('✅ Connecté à ' + nom); setupChat(conn); playSound('connect-sound'); });
+    conn.on('error', () => toast('❌ Impossible de joindre ' + nom));
+}
+
+function callOnly(id, nom) {
+    openCommScreen(nom, id);
+    addSystemMsg('📞 Appel vers ' + nom + '…');
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        pendingStream = stream;
+        const call = peer.call(id, stream);
+        activeCall = call;
+        call.on('stream', rs => {
+            document.getElementById('remote-audio').srcObject = rs;
+            startCallUI();
+            setupAudioViz(rs);
+        });
+        call.on('close', endCallUI);
+        call.on('error', () => { addSystemMsg('❌ Appel échoué'); toast('❌ Impossible d\'appeler ' + nom); });
+        document.getElementById('mute-btn').style.display = 'flex';
+    }).catch(() => { addSystemMsg('⚠️ Micro inaccessible'); toast('🎤 Micro inaccessible'); });
+}
+
+function startCallFromChat() {
+    if (activeCall) return toast('📞 Appel déjà en cours');
+    if (!activePeerId) return toast('❌ Aucun contact actif');
+    const nom = document.getElementById('chat-with').textContent;
+    addSystemMsg('📞 Appel en cours…');
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        pendingStream = stream;
+        const call = peer.call(activePeerId, stream);
+        activeCall = call;
+        call.on('stream', rs => {
+            document.getElementById('remote-audio').srcObject = rs;
+            startCallUI();
+            setupAudioViz(rs);
+        });
+        call.on('close', endCallUI);
+        document.getElementById('mute-btn').style.display = 'flex';
+    }).catch(() => toast('🎤 Micro inaccessible'));
+}
+
+function setupIncomingChat(conn, name) {
+    if (document.getElementById('comm-screen').style.display !== 'flex') {
+        openCommScreen(name, conn.peer);
+        addSystemMsg('📩 ' + name + ' vous a écrit');
+    }
+    setupChat(conn);
+}
+
+function openCommScreen(nom, id) {
+    activePeerId = id;
+    document.getElementById('chat-with').textContent = nom;
+    document.getElementById('chat-status').textContent = id;
+    const av = document.getElementById('chat-avatar');
+    av.textContent = nom[0]?.toUpperCase() || '?';
+    av.className = 'chat-hdr-av ' + getAv(nom);
+    // Load history
+    const box = document.getElementById('chat-box');
+    box.innerHTML = '<div class="typing-bubble" id="typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+    const hist = chatHistory[id] || [];
+    hist.forEach(m => appendMsgEl(m.text, m.type, m.time));
+    // Clear unread
+    unread[id] = 0; saveUnread(); renderContacts();
+    document.getElementById('call-bar').style.display = 'none';
+    document.getElementById('mute-btn').style.display = 'none';
+    document.getElementById('comm-screen').style.display = 'flex';
+    box.scrollTop = box.scrollHeight;
+}
+
+function setupChat(conn) {
+    activeConn = conn;
+    conn.on('data', d => {
+        if (d && d.__type === 'typing') {
+            showTyping(d.active); return;
+        }
+        const text = typeof d === 'string' ? d : JSON.stringify(d);
+        const time = fmtTime();
+        // Save history
+        if (!chatHistory[conn.peer]) chatHistory[conn.peer] = [];
+        chatHistory[conn.peer].push({ type:'msg-in', text, time });
+        saveHistory();
+        appendMsgEl(text, 'msg-in', time);
+        playSound('msg-sound');
+        sendNotif('💬 Nouveau message', text);
+        // Unread if not focused on this convo
+        if (document.visibilityState === 'hidden' || document.getElementById('comm-screen').style.display !== 'flex') {
+            unread[conn.peer] = (unread[conn.peer] || 0) + 1;
+            saveUnread(); renderContacts();
+        }
+    });
+    conn.on('close', () => { addSystemMsg('🔌 Connexion fermée'); activeConn = null; });
+}
+
+function sendMsg() {
+    const inp = document.getElementById('message-input');
+    const val = inp.value.trim();
+    if (!val) return;
+    if (!activeConn?.open) return toast('❌ Non connecté');
+    activeConn.send(val);
+    const time = fmtTime();
+    if (!chatHistory[activePeerId]) chatHistory[activePeerId] = [];
+    chatHistory[activePeerId].push({ type:'msg-out', text:val, time });
+    saveHistory();
+    appendMsgEl(val, 'msg-out', time);
+    inp.value = '';
+    // stop typing indicator
+    activeConn.send({ __type: 'typing', active: false });
+}
+
+function appendMsgEl(text, cls, time) {
+    const box = document.getElementById('chat-box');
+    const typing = document.getElementById('typing-bubble');
+    const d = document.createElement('div');
+    d.className = 'msg ' + cls;
+    d.innerHTML = escHtml(text) + `<span class="msg-time">${time || fmtTime()}</span>`;
+    box.insertBefore(d, typing);
+    box.scrollTop = box.scrollHeight;
+}
+
+function addSystemMsg(text) {
+    const box = document.getElementById('chat-box');
+    const typing = document.getElementById('typing-bubble');
+    const d = document.createElement('div');
+    d.className = 'msg-system'; d.textContent = text;
+    box.insertBefore(d, typing);
+    box.scrollTop = box.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════════════
+   TYPING INDICATOR
+═══════════════════════════════════════════════════ */
+function handleTypingInput() {
+    if (!activeConn?.open) return;
+    activeConn.send({ __type: 'typing', active: true });
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        if (activeConn?.open) activeConn.send({ __type: 'typing', active: false });
+    }, 2000);
+}
+
+function showTyping(active) {
+    const bubble = document.getElementById('typing-bubble');
+    bubble.style.display = active ? 'block' : 'none';
+    isTypingVisible = active;
+    if (active) {
+        const box = document.getElementById('chat-box');
+        box.scrollTop = box.scrollHeight;
+    }
+}
+
+function handleInputKey(e) {
+    if (e.key === 'Enter') sendMsg();
+}
+
+/* ═══════════════════════════════════════════════════
+   CALL UI — TIMER + MUTE + VISUALIZER
+═══════════════════════════════════════════════════ */
+function startCallUI() {
+    document.getElementById('call-bar').style.display = 'flex';
+    addSystemMsg('✅ Appel établi');
+    callSeconds = 0;
+    clearInterval(callTimerInterval);
+    callTimerInterval = setInterval(() => {
+        callSeconds++;
+        document.getElementById('call-timer').textContent = fmtSeconds(callSeconds);
+    }, 1000);
+}
+
+function endCallUI() {
+    document.getElementById('call-bar').style.display = 'none';
+    document.getElementById('mute-btn').style.display = 'none';
+    clearInterval(callTimerInterval);
+    stopViz();
+    addSystemMsg('📵 Appel terminé — durée : ' + fmtSeconds(callSeconds));
+    activeCall = null; isMuted = false;
+    const btn = document.getElementById('mute-btn');
+    btn.classList.remove('muted'); btn.textContent = '🎤';
+}
+
+function hangupCall() {
+    activeCall?.close();
+    pendingStream?.getTracks().forEach(t => t.stop());
+    endCallUI();
+}
+
+function toggleMute() {
+    if (!pendingStream) return;
+    isMuted = !isMuted;
+    pendingStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+    const btn = document.getElementById('mute-btn');
+    btn.textContent = isMuted ? '🔇' : '🎤';
+    btn.classList.toggle('muted', isMuted);
+    toast(isMuted ? '🔇 Micro coupé' : '🎤 Micro activé');
+}
+
+/* ═══════════════════════════════════════════════════
+   AUDIO VISUALIZER (remote stream)
+═══════════════════════════════════════════════════ */
+function setupAudioViz(stream) {
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 32;
+        const src = audioCtx.createMediaStreamSource(stream);
+        src.connect(analyser);
+        const bars = [0,1,2,3,4].map(i => document.getElementById('vb'+i));
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        vizInterval = setInterval(() => {
+            analyser.getByteFrequencyData(data);
+            bars.forEach((b, i) => {
+                if (b) b.style.height = Math.max(4, (data[i*2] / 255) * 18) + 'px';
+            });
+        }, 80);
+    } catch(e) {}
+}
+
+function stopViz() {
+    clearInterval(vizInterval);
+    try { audioCtx?.close(); } catch(e) {}
+    audioCtx = null; analyser = null;
+}
+
+/* ═══════════════════════════════════════════════════
+   SOUNDS
+═══════════════════════════════════════════════════ */
+function playSound(id) {
+    try { const a = document.getElementById(id); a.currentTime = 0; a.play(); } catch(e) {}
+}
+
+/* ═══════════════════════════════════════════════════
+   STOP ALL
+═══════════════════════════════════════════════════ */
+async function stopAll() {
+    const ok = await showConfirm('Quitter la conversation', 'Terminer et revenir aux contacts ?');
+    if (!ok) return;
+    if (activeCall) { activeCall.close(); endCallUI(); }
+    activeConn?.close();
+    pendingStream?.getTracks().forEach(t => t.stop());
+    document.getElementById('comm-screen').style.display = 'none';
+    document.getElementById('typing-bubble').style.display = 'none';
+    activeConn = null; activePeerId = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════════════════════ */
+document.getElementById('my-id-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') initPhone();
+});
 </script>
 </body>
 </html>
